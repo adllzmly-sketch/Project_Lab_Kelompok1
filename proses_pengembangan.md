@@ -15,3 +15,6 @@ Anggota kelompok :
     -Publish project ke github
         - Create Project (npx create-expo-app@latest)
     <video controls src="Recording-2026-10-01-100151.mp4" title="Title"></video>
+
+Tiara Salsabila
+![alt text](image-1.png)
