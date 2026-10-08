@@ -13,5 +13,5 @@ Anggota kelompok :
 1.  Tugas Ketua Kelompok ( Adel Zamalya ) - Inisiasi project dan Invite anggota
     ![alt text](image.png)
     -Publish project ke github
-        - Create Project (npx create-expo-app@latest)
+    - Create Project (npx create-expo-app@latest)
     <video controls src="Recording-2026-10-01-100151.mp4" title="Title"></video>
