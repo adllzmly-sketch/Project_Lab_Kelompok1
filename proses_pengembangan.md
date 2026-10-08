@@ -24,3 +24,6 @@ Luthfi Baihaqi
 
 Mohamad Faris Rachman Pratama
 <img width="1915" height="1076" alt="image" src="https://github.com/user-attachments/assets/cf8bb5b5-8f13-4935-8609-cab437449502" />
+
+Kamalul Iman
+![alt text](image-2.png)
