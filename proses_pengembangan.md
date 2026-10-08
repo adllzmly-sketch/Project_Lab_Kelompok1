@@ -1,4 +1,4 @@
-### Proses Pengembangan Project Lab Kelompokn 1
+### Proses Pengembangan Project Lab Kelompok 1
 
 Anggota kelompok :
 
@@ -15,3 +15,15 @@ Anggota kelompok :
     -Publish project ke github
     - Create Project (npx create-expo-app@latest)
     <video controls src="Recording-2026-10-01-100151.mp4" title="Title"></video>
+
+Tiara Salsabila
+![alt text](image-1.png)
+
+Luthfi Baihaqi
+<img width="640" height="337" alt="image" src="https://github.com/user-attachments/assets/2130422b-e5fe-477e-83bb-e678f9967d3a" />
+
+Mohamad Faris Rachman Pratama
+<img width="1915" height="1076" alt="image" src="https://github.com/user-attachments/assets/cf8bb5b5-8f13-4935-8609-cab437449502" />
+
+Kamalul Iman
+![alt text](image-2.png)
