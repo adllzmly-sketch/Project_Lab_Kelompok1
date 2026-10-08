@@ -1,4 +1,4 @@
-### Proses Pengembangan Project Lab Kelompokn 1
+### Proses Pengembangan Project Lab Kelompok 1
 
 Anggota kelompok :
 
