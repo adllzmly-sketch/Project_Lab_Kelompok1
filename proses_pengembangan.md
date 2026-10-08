@@ -21,3 +21,6 @@ Tiara Salsabila
 
 Luthfi Baihaqi
 <img width="640" height="337" alt="image" src="https://github.com/user-attachments/assets/2130422b-e5fe-477e-83bb-e678f9967d3a" />
+
+Mohamad Faris Rachman Pratama
+<img width="1915" height="1076" alt="image" src="https://github.com/user-attachments/assets/cf8bb5b5-8f13-4935-8609-cab437449502" />
