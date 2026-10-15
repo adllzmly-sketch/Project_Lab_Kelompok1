@@ -10,7 +10,7 @@ KASINO (Kas Informasi Organisasi) merupakan sistem informasi keuangan yang memba
 
 1. Adel Zamalya - Dashboard Admin
 2. Tiara Salsabila - Halaman User
-3. Luthfi Baihaqi - Login Admin
+3. Luthfi Baihaqi - Login Dan Manajemen Akun Admin / User
 4. Mochamad Faris Rahman Pratama - Halaman Transaksi & Laporan Keuangan
 5. Kamalul Iman - Deteksi Anomali
 
