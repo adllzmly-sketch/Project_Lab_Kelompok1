@@ -16,4 +16,4 @@ KASINO (Kas Informasi Organisasi) merupakan sistem informasi keuangan yang memba
 
 # Gambaran Awal Sistem
 
-![alt text](image-1.png)
+<img width="987" height="683" alt="Screenshot 2026-10-15 082108" src="https://github.com/user-attachments/assets/f000c723-463c-4880-9329-eadda553cf5e" />
