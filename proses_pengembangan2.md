@@ -8,9 +8,9 @@ KASINO (Kas Informasi Organisasi) merupakan sistem informasi keuangan yang memba
 
 # Pembagian Jobdesk
 
-1. Adel Zamalya - Dashboard Admin
+1. Adel Zamalya - Dashboard Admin, Pemasukan Pengeluaran
 2. Tiara Salsabila - Halaman User
-3. Luthfi Baihaqi - Login Dan Manajemen Akun Admin / User
+3. Luthfi Baihaqi - Login Dan Manajemen Akun Admin / User, Profile
 4. Mochamad Faris Rahman Pratama - Halaman Transaksi & Laporan Keuangan
 5. Kamalul Iman - Deteksi Anomali
 
