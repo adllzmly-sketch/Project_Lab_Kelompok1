@@ -1,98 +1,53 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { router } from 'expo-router';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+const navy = '#173575';
+const blue = '#5d719f';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
+const adminLinks = [
+  { title: 'Catat Pemasukan', route: '/admin/tambah_pemasukan', icon: '+' },
+  { title: 'Catat Pengeluaran', route: '/admin/read_pengeluaran', icon: '−' },
+  { title: 'Daftar Transaksi', route: '/admin/daftar_transaksi', icon: '↗' },
+  { title: 'Laporan Keuangan', route: '/admin/laporan_keuangan', icon: '▤' },
+];
+
+const userLinks = [
+  { title: 'Daftar Transaksi', route: '/user/daftar_transaksi', icon: '↗' },
+  { title: 'Laporan Keuangan', route: '/user/laporan_keuangan', icon: '▤' },
+];
+
+function LinkCard({ title, route, icon }: { title: string; route: string; icon: string }) {
+  return <Pressable onPress={() => router.push(route as never)} style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
+    <View style={styles.icon}><Text style={styles.iconText}>{icon}</Text></View>
+    <Text style={styles.cardTitle}>{title}</Text>
+    <Text style={styles.arrow}>›</Text>
+  </Pressable>;
 }
 
 export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
-  );
+  return <SafeAreaView style={styles.safe}>
+    <ScrollView contentContainerStyle={styles.content}>
+      <View style={styles.header}><Text style={styles.brandMark}>Ⅱ·</Text><Text style={styles.brand}>▣  KASINO</Text></View>
+      <View style={styles.welcome}><Text style={styles.eyebrow}>MANAJEMEN KAS</Text><Text style={styles.heading}>Keuangan usaha, lebih teratur.</Text><Text style={styles.subtitle}>Pilih menu untuk mengelola dan melihat transaksi.</Text></View>
+      <Text style={styles.section}>ADMIN</Text>
+      <View style={styles.grid}>{adminLinks.map(link => <LinkCard key={link.title} {...link} />)}</View>
+      <Text style={[styles.section, { marginTop: 28 }]}>USER</Text>
+      <View style={styles.grid}>{userLinks.map(link => <LinkCard key={link.title} {...link} />)}</View>
+    </ScrollView>
+  </SafeAreaView>;
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
+  safe: { flex: 1, backgroundColor: '#f4f6fb' },
+  content: { width: '100%', maxWidth: 920, alignSelf: 'center', paddingHorizontal: 22, paddingBottom: 32 },
+  header: { height: 58, backgroundColor: navy, marginHorizontal: -22, paddingHorizontal: 24, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  brandMark: { color: '#fff', fontWeight: '700', fontSize: 23 }, brand: { color: '#fff', fontWeight: '700', fontSize: 15 },
+  welcome: { paddingTop: 34, paddingBottom: 27 }, eyebrow: { color: blue, letterSpacing: 1.4, fontSize: 12, fontWeight: '700' },
+  heading: { color: navy, fontSize: 28, fontWeight: '700', marginTop: 8 }, subtitle: { color: '#697797', fontSize: 15, marginTop: 7 },
+  section: { color: navy, fontWeight: '700', letterSpacing: 1, fontSize: 13, marginBottom: 12 },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
+  card: { backgroundColor: '#fff', borderRadius: 12, minHeight: 88, padding: 15, flexDirection: 'row', alignItems: 'center', gap: 12, flexGrow: 1, flexBasis: 250, borderWidth: 1, borderColor: '#e4e9f3' },
+  icon: { width: 42, height: 42, borderRadius: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: '#e9eef9' }, iconText: { fontSize: 22, color: navy, fontWeight: '700' },
+  cardTitle: { color: navy, fontWeight: '600', fontSize: 15, flex: 1 }, arrow: { color: blue, fontSize: 26 }, pressed: { opacity: 0.7 },
 });
