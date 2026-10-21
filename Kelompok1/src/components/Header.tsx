@@ -115,9 +115,7 @@ export default function Header() {
   const handleAnomali = () => {
     setActiveMenu('Deteksi Anomali');
     closeMenu();
-
-    // Route halaman anomali belum dibuat.
-    // Nanti tambahkan router.push() di sini.
+    router.push('/admin/deteksi-anomali');
   };
 
   const handleProfile = () => {

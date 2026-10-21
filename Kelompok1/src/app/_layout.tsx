@@ -7,6 +7,10 @@ import { FinanceProvider } from '@/context/finance-context';
 
 SplashScreen.preventAutoHideAsync();
 
+export const unstable_settings = {
+  initialRouteName: 'login',
+};
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
@@ -16,6 +20,7 @@ export default function RootLayout() {
         <AnimatedSplashOverlay />
 
         <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="login" />
           <Stack.Screen name="index" />
           <Stack.Screen name="admin" />
           <Stack.Screen name="user" />
