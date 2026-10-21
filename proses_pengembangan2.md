@@ -3,16 +3,17 @@
 # Nama Sistem
 
 KASINO
+
 KASINO (Kas Informasi Organisasi) merupakan sistem informasi keuangan yang membantu organisasi mahasiswa dalam mencatat, mengelola, dan memantau transaksi pemasukan serta pengeluaran kas secara terstruktur. Sistem ini dilengkapi dengan Rule-Based AI untuk mendeteksi transaksi yang berpotensi tidak wajar berdasarkan aturan tertentu dan memberikan peringatan kepada admin untuk dilakukan pemeriksaan. KASINO memiliki dua jenis pengguna, yaitu admin yang mengelola data dan transaksi keuangan, serta user/anggota yang dapat melihat informasi dan riwayat keuangan organisasi.
 
 # Pembagian Jobdesk
 
-1. Adel Zamalya - Dashboard Admin
+1. Adel Zamalya - Dashboard Admin, Pemasukan Pengeluaran
 2. Tiara Salsabila - Halaman User
-3. Luthfi Baihaqi - Login Admin
+3. Luthfi Baihaqi - Login Dan Manajemen Akun Admin / User, Profile
 4. Mochamad Faris Rahman Pratama - Halaman Transaksi & Laporan Keuangan
 5. Kamalul Iman - Deteksi Anomali
 
 # Gambaran Awal Sistem
 
-![alt text](image-1.png)
+<img width="987" height="683" alt="Screenshot 2026-10-15 082108" src="https://github.com/user-attachments/assets/f000c723-463c-4880-9329-eadda553cf5e" />
