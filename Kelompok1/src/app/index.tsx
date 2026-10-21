@@ -1,53 +1,46 @@
+import { useState } from 'react';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { navy, blue } from '../components/finance-ui';
+import { useFinance } from '../context/finance-context';
 
-const navy = '#173575';
-const blue = '#5d719f';
+export default function LoginScreen() {
+  const { authenticate, themeMode } = useFinance();
+  const dark = themeMode === 'dark';
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const handleLogin = () => {
+    const role = authenticate(username, password);
+    if (role) router.replace(role === 'admin' ? '/admin/dashboard' : '/user/dashboard');
+    else {
+      setError('Username atau password salah.');
+    }
+  };
+  return <View style={[styles.screen, dark && { backgroundColor: '#111827' }]}><View style={[styles.card, dark && { backgroundColor: '#1d293b', borderColor: '#3b4960' }]}>
+    <View style={styles.logo}><Text style={[styles.logoMark, dark && { color: '#f3f6fc' }]}>K</Text><Text style={[styles.brand, dark && { color: '#f3f6fc' }]}>KASINO</Text></View>
+    <TextInput style={[styles.input, dark && { backgroundColor: '#35476b', color: '#fff' }]} placeholder="Username / Email" placeholderTextColor={dark ? '#d1d9e8' : blue} value={username} onChangeText={value => { setUsername(value); setError(''); }} autoCapitalize="none" autoCorrect={false} />
+    <View style={[styles.passwordField, dark && { backgroundColor: '#35476b', borderColor: '#8799bd' }]}>
+      <TextInput style={[styles.passwordInput, dark && { color: '#fff' }]} placeholder="Password" placeholderTextColor={dark ? '#d1d9e8' : blue} value={password} onChangeText={value => { setPassword(value); setError(''); }} secureTextEntry={!showPassword} onSubmitEditing={handleLogin} />
+      <Pressable accessibilityRole="button" accessibilityLabel={showPassword ? 'Sembunyikan password' : 'Tampilkan password'} onPress={() => setShowPassword(value => !value)} hitSlop={8}>
+        <Text style={styles.passwordToggle}>{showPassword ? 'Sembunyikan' : 'Lihat'}</Text>
+      </Pressable>
+    </View>
+    {error ? <Text accessibilityRole="alert" style={styles.error}>{error}</Text> : null}
+    <Pressable style={styles.button} onPress={handleLogin}><Text style={styles.buttonText}>Login</Text></Pressable>
 
-const adminLinks = [
-  { title: 'Catat Pemasukan', route: '/admin/tambah_pemasukan', icon: '+' },
-  { title: 'Catat Pengeluaran', route: '/admin/read_pengeluaran', icon: '−' },
-  { title: 'Daftar Transaksi', route: '/admin/daftar_transaksi', icon: '↗' },
-  { title: 'Laporan Keuangan', route: '/admin/laporan_keuangan', icon: '▤' },
-];
-
-const userLinks = [
-  { title: 'Daftar Transaksi', route: '/user/daftar_transaksi', icon: '↗' },
-  { title: 'Laporan Keuangan', route: '/user/laporan_keuangan', icon: '▤' },
-];
-
-function LinkCard({ title, route, icon }: { title: string; route: string; icon: string }) {
-  return <Pressable onPress={() => router.push(route as never)} style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
-    <View style={styles.icon}><Text style={styles.iconText}>{icon}</Text></View>
-    <Text style={styles.cardTitle}>{title}</Text>
-    <Text style={styles.arrow}>›</Text>
-  </Pressable>;
-}
-
-export default function HomeScreen() {
-  return <SafeAreaView style={styles.safe}>
-    <ScrollView contentContainerStyle={styles.content}>
-      <View style={styles.header}><Text style={styles.brandMark}>Ⅱ·</Text><Text style={styles.brand}>▣  KASINO</Text></View>
-      <View style={styles.welcome}><Text style={styles.eyebrow}>MANAJEMEN KAS</Text><Text style={styles.heading}>Keuangan usaha, lebih teratur.</Text><Text style={styles.subtitle}>Pilih menu untuk mengelola dan melihat transaksi.</Text></View>
-      <Text style={styles.section}>ADMIN</Text>
-      <View style={styles.grid}>{adminLinks.map(link => <LinkCard key={link.title} {...link} />)}</View>
-      <Text style={[styles.section, { marginTop: 28 }]}>USER</Text>
-      <View style={styles.grid}>{userLinks.map(link => <LinkCard key={link.title} {...link} />)}</View>
-    </ScrollView>
-  </SafeAreaView>;
+  </View></View>;
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#f4f6fb' },
-  content: { width: '100%', maxWidth: 920, alignSelf: 'center', paddingHorizontal: 22, paddingBottom: 32 },
-  header: { height: 58, backgroundColor: navy, marginHorizontal: -22, paddingHorizontal: 24, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  brandMark: { color: '#fff', fontWeight: '700', fontSize: 23 }, brand: { color: '#fff', fontWeight: '700', fontSize: 15 },
-  welcome: { paddingTop: 34, paddingBottom: 27 }, eyebrow: { color: blue, letterSpacing: 1.4, fontSize: 12, fontWeight: '700' },
-  heading: { color: navy, fontSize: 28, fontWeight: '700', marginTop: 8 }, subtitle: { color: '#697797', fontSize: 15, marginTop: 7 },
-  section: { color: navy, fontWeight: '700', letterSpacing: 1, fontSize: 13, marginBottom: 12 },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
-  card: { backgroundColor: '#fff', borderRadius: 12, minHeight: 88, padding: 15, flexDirection: 'row', alignItems: 'center', gap: 12, flexGrow: 1, flexBasis: 250, borderWidth: 1, borderColor: '#e4e9f3' },
-  icon: { width: 42, height: 42, borderRadius: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: '#e9eef9' }, iconText: { fontSize: 22, color: navy, fontWeight: '700' },
-  cardTitle: { color: navy, fontWeight: '600', fontSize: 15, flex: 1 }, arrow: { color: blue, fontSize: 26 }, pressed: { opacity: 0.7 },
+  screen: { flex: 1, backgroundColor: '#f1f2f4', alignItems: 'center', justifyContent: 'center', padding: 18 },
+  card: { width: 250, maxWidth: '100%', backgroundColor: '#fff', padding: 20, borderWidth: 1, borderColor: '#e1e4eb', alignItems: 'stretch', boxShadow: '0px 3px 12px rgba(16, 30, 64, 0.08)', elevation: 2 },
+  logo: { alignItems: 'center', marginBottom: 26 }, logoMark: { color: navy, fontSize: 26, fontWeight: '900', lineHeight: 29 }, brand: { color: navy, fontSize: 9, fontWeight: '900', letterSpacing: 0.5, marginTop: 2 },
+  input: { height: 36, borderWidth: 1, borderColor: '#8799bd', borderRadius: 3, color: navy, fontSize: 11, paddingHorizontal: 9, marginBottom: 7 },
+  passwordField: { height: 36, borderWidth: 1, borderColor: '#8799bd', borderRadius: 3, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 9, marginBottom: 7 },
+  passwordInput: { flex: 1, height: '100%', color: navy, fontSize: 11, padding: 0 },
+  passwordToggle: { color: blue, fontSize: 10, fontWeight: '600', paddingLeft: 8 },
+  error: { color: '#a32632', fontSize: 10, marginBottom: 7 },
+  button: { marginTop: 2, height: 36, backgroundColor: navy, alignItems: 'center', justifyContent: 'center', borderRadius: 2 }, buttonText: { color: '#fff', fontSize: 12, fontWeight: '700' },
 });
