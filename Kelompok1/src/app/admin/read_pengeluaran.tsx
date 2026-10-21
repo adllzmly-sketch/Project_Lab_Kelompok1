@@ -23,7 +23,7 @@ export default function CatatPengeluaran() {
         }
         addTransaction({ type: 'Pengeluaran', source: source.trim(), amount: value, date: date.trim(), description: note.trim() || source.trim(), note: note.trim(), proof: proof.trim() });
         Alert.alert('Berhasil', 'Pengeluaran berhasil dicatat.');
-        router.back();
+        router.canGoBack() ? router.back() : router.replace('/admin/dashboard');
       }} />
     </View>
   </FinancePage>;

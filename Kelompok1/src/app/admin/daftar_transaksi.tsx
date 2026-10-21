@@ -8,7 +8,7 @@ export default function DaftarTransaksi() {
   const [filter, setFilter] = useState('Semua');
   const { transactions } = useFinance();
   const rows = useMemo(() => filter === 'Semua' ? transactions : transactions.filter(x => x.type === filter), [filter, transactions]);
-  return <FinancePage title="Riwayat Transaksi">
+  return <FinancePage title="Daftar Transaksi">
     <View style={{ flexDirection: 'row', gap: 8, marginBottom: 4 }}>
       {['Semua', 'Pemasukan', 'Pengeluaran'].map(item => <Pressable key={item} onPress={() => setFilter(item)} style={{ backgroundColor: filter === item ? '#173575' : blue, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 9 }}><Text style={{ color: '#fff', fontSize: 12 }}>{item}</Text></Pressable>)}
     </View>
