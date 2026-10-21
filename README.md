@@ -17,7 +17,9 @@ Fitur UI:
 - Tombol tampil/sembunyikan password
 - Tombol Masuk
 
-<img width="1080" height="1920" alt="image" src="https://github.com/user-attachments/assets/90525b65-f4e7-48e9-afc7-51c0c2bf9c0c" />
+<p align="center">
+  <img width="220" alt="Login KASINO" src="https://github.com/user-attachments/assets/90525b65-f4e7-48e9-afc7-51c0c2bf9c0c" />
+</p>
 
 ### 2. Dashboard Admin
 Dashboard Admin menampilkan ringkasan kondisi keuangan organisasi sehingga admin dapat melihat informasi utama secara cepat.
@@ -30,8 +32,10 @@ Fitur UI:
 - Grafik keuangan
 - Informasi deteksi anomali
 - Drawer menu navigasi
-
-<img width="1080" height="1920" alt="image" src="https://github.com/user-attachments/assets/1d62ae7a-d32e-4641-8597-ac5b50f53d4a" />
+  
+<p align="center">
+  <img width="220" alt="image" src="https://github.com/user-attachments/assets/1d62ae7a-d32e-4641-8597-ac5b50f53d4a" />
+</p>
 
 ### 3. Tambah Pemasukan
 Halaman ini digunakan untuk mencatat data pemasukan kas organisasi.
@@ -43,8 +47,10 @@ Fitur UI:
 - Input keterangan
 - Bukti transaksi
 - Tombol Simpan dan Batal
-
-<img width="1080" height="1920" alt="image" src="https://github.com/user-attachments/assets/b81d838e-0523-4715-bd60-f552467f73f9" />
+  
+<p align="center">
+  <img width="220" alt="image" src="https://github.com/user-attachments/assets/b81d838e-0523-4715-bd60-f552467f73f9" />
+</p>
 
 ### 4. Pengeluaran
 Halaman ini digunakan untuk mencatat pengeluaran kas organisasi.
@@ -56,8 +62,10 @@ Fitur UI:
 - Input keterangan
 - Bukti transaksi
 - Tombol Simpan dan Batal
-
-<img width="1080" height="1920" alt="image" src="https://github.com/user-attachments/assets/5364ab0e-3200-40a0-8b00-bf004c73a72c" />
+  
+<p align="center">
+  <img width="220" alt="image" src="https://github.com/user-attachments/assets/5364ab0e-3200-40a0-8b00-bf004c73a72c" />
+</p>
 
 ### 5. Laporan Keuangan
 Halaman Laporan Keuangan digunakan untuk melihat ringkasan keuangan organisasi berdasarkan periode tertentu.
@@ -68,8 +76,10 @@ Fitur UI:
 - Saldo akhir
 - Periode laporan
 - Grafik/ringkasan keuangan
-
-<img width="2160" height="3840" alt="image" src="https://github.com/user-attachments/assets/6caf601c-d86c-4baf-a932-8488c5ff757c" />
+  
+<p align="center">
+  <img width="220" alt="image" src="https://github.com/user-attachments/assets/6caf601c-d86c-4baf-a932-8488c5ff757c" />
+</p>
 
 ### 6. Deteksi Anomali
 Halaman Deteksi Anomali menampilkan transaksi yang terindikasi tidak wajar berdasarkan aturan yang telah ditentukan.
@@ -79,8 +89,10 @@ Fitur UI:
 - Informasi nominal transaksi
 - Alasan transaksi terdeteksi
 - Status pemeriksaan transaksi
-
-<img width="2160" height="3840" alt="image" src="https://github.com/user-attachments/assets/a5f3315d-ad56-4bd4-bb3c-bc760e829cb3" />
+  
+<p align="center">
+  <img width="220"  alt="image" src="https://github.com/user-attachments/assets/a5f3315d-ad56-4bd4-bb3c-bc760e829cb3" />
+</p>
 
 ### 7. Profile
 Halaman Profile menampilkan informasi akun pengguna serta menyediakan fitur untuk keluar dari aplikasi.
@@ -89,8 +101,10 @@ Fitur UI:
 - Informasi akun
 - Data pengguna
 - Tombol Logout
-
-<img width="2160" height="3840" alt="image" src="https://github.com/user-attachments/assets/31042e85-a199-4dda-988c-2ef855b1e252" />
+  
+<p align="center">
+  <img width="220" alt="image" src="https://github.com/user-attachments/assets/31042e85-a199-4dda-988c-2ef855b1e252" />
+</p>
 
 ## Cara Menjalankan Proyek
 
