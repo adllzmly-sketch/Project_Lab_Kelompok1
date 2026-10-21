@@ -17,7 +17,7 @@ export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
 
   const admin = role === 'admin';
 
-  // Nama default: Rifa jika Admin, Pengguna Kasino jika User
+ 
   const defaultNama = admin ? 'Rifa' : 'Pengguna Kasino';
   const defaultUsername = admin ? 'rifa_admin' : 'user';
   const email = admin ? 'rifa@kasino.id' : 'user@kasino.id';
@@ -36,7 +36,7 @@ export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  // Fungsi Pilih Gambar Foto Profil
+  
   const handlePickImage = async () => {
     try {
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -90,7 +90,7 @@ export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
         showsVerticalScrollIndicator={false}
         bounces={false}
       >
-        {/* Header Profil & Foto */}
+       
         <View style={s.header}>
           <Pressable 
             onPress={handlePickImage} 
@@ -111,7 +111,7 @@ export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
           <Text style={s.name}>{nama}</Text>
         </View>
 
-        {/* Menu Pilihan UI */}
+       
         <View style={[s.contentWrapper, isLargeScreen && s.contentWrapperLarge]}>
           <MenuCard 
             icon="person-outline" 
@@ -178,7 +178,7 @@ export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
             </Text>
           </MenuCard>
 
-          {/* Tombol Logout Utama */}
+         
           <Pressable 
             accessibilityRole="button" 
             accessibilityLabel="Logout" 
@@ -191,7 +191,7 @@ export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
         </View>
       </ScrollView>
 
-      {/* Pop-up Custom Confirmation Logout */}
+     
       <Modal
         visible={showLogoutModal}
         transparent
