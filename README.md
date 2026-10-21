@@ -6,7 +6,7 @@ KASINO (Kas Informasi Organisasi) merupakan aplikasi yang dirancang untuk memban
 
 KASINO memiliki dua jenis pengguna, yaitu Admin/Bendahara dan User/Anggota. Admin dapat mengelola transaksi dan keuangan organisasi, sedangkan User dapat melihat informasi keuangan sebagai bentuk transparansi pengelolaan kas.
 
-## Daftar Screen dan Fitur UI
+## Daftar Screen dan Fitur 
 
 ### 1. Login
 Halaman Login digunakan sebagai halaman awal untuk masuk ke dalam aplikasi menggunakan akun yang telah tersedia.
