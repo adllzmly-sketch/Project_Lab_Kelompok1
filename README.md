@@ -11,12 +11,6 @@ KASINO memiliki dua jenis pengguna, yaitu Admin/Bendahara dan User/Anggota. Admi
 ### 1. Login
 Halaman Login digunakan sebagai halaman awal untuk masuk ke dalam aplikasi menggunakan akun yang telah tersedia.
 
-Fitur UI:
-- Input email
-- Input password
-- Tombol tampil/sembunyikan password
-- Tombol Masuk
-
 <p align="center">
   <img width="220" alt="Login KASINO" src="https://github.com/user-attachments/assets/90525b65-f4e7-48e9-afc7-51c0c2bf9c0c" />
 </p>
@@ -24,29 +18,12 @@ Fitur UI:
 ### 2. Dashboard Admin
 Dashboard Admin menampilkan ringkasan kondisi keuangan organisasi sehingga admin dapat melihat informasi utama secara cepat.
 
-Fitur UI:
-- Saldo kas
-- Total pemasukan
-- Total pengeluaran
-- Total transaksi
-- Grafik keuangan
-- Informasi deteksi anomali
-- Drawer menu navigasi
-  
 <p align="center">
   <img width="220" alt="image" src="https://github.com/user-attachments/assets/1d62ae7a-d32e-4641-8597-ac5b50f53d4a" />
 </p>
 
 ### 3. Tambah Pemasukan
 Halaman ini digunakan untuk mencatat data pemasukan kas organisasi.
-
-Fitur UI:
-- Input sumber pemasukan
-- Input nominal
-- Input tanggal
-- Input keterangan
-- Bukti transaksi
-- Tombol Simpan dan Batal
   
 <p align="center">
   <img width="220" alt="image" src="https://github.com/user-attachments/assets/b81d838e-0523-4715-bd60-f552467f73f9" />
@@ -55,27 +32,12 @@ Fitur UI:
 ### 4. Pengeluaran
 Halaman ini digunakan untuk mencatat pengeluaran kas organisasi.
 
-Fitur UI:
-- Input jenis pengeluaran
-- Input nominal
-- Input tanggal pengeluaran
-- Input keterangan
-- Bukti transaksi
-- Tombol Simpan dan Batal
-  
 <p align="center">
   <img width="220" alt="image" src="https://github.com/user-attachments/assets/5364ab0e-3200-40a0-8b00-bf004c73a72c" />
 </p>
 
 ### 5. Laporan Keuangan
 Halaman Laporan Keuangan digunakan untuk melihat ringkasan keuangan organisasi berdasarkan periode tertentu.
-
-Fitur UI:
-- Total pemasukan
-- Total pengeluaran
-- Saldo akhir
-- Periode laporan
-- Grafik/ringkasan keuangan
   
 <p align="center">
   <img width="220" alt="image" src="https://github.com/user-attachments/assets/6caf601c-d86c-4baf-a932-8488c5ff757c" />
@@ -84,23 +46,12 @@ Fitur UI:
 ### 6. Deteksi Anomali
 Halaman Deteksi Anomali menampilkan transaksi yang terindikasi tidak wajar berdasarkan aturan yang telah ditentukan.
 
-Fitur UI:
-- Daftar transaksi terindikasi anomali
-- Informasi nominal transaksi
-- Alasan transaksi terdeteksi
-- Status pemeriksaan transaksi
-  
 <p align="center">
   <img width="220"  alt="image" src="https://github.com/user-attachments/assets/a5f3315d-ad56-4bd4-bb3c-bc760e829cb3" />
 </p>
 
 ### 7. Profile
 Halaman Profile menampilkan informasi akun pengguna serta menyediakan fitur untuk keluar dari aplikasi.
-
-Fitur UI:
-- Informasi akun
-- Data pengguna
-- Tombol Logout
   
 <p align="center">
   <img width="220" alt="image" src="https://github.com/user-attachments/assets/31042e85-a199-4dda-988c-2ef855b1e252" />
