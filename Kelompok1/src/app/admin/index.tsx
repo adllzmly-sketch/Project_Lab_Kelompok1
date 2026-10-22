@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, Pressable, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -205,7 +206,15 @@ export default function HomeScreen() {
             CARD DETEKSI ANOMALI
         ================================================= */}
 
-        <Pressable style={({ pressed }) => [styles.anomalyCard, pressed && styles.anomalyPressed]} onPress={() => console.log('Deteksi Anomali diklik')} accessibilityRole="button" accessibilityLabel="Buka deteksi anomali">
+        <Pressable
+          style={({ pressed }) => [
+            styles.anomalyCard,
+            pressed && styles.anomalyPressed,
+          ]}
+          onPress={() => router.push('/admin/deteksi-anomali')}
+          accessibilityRole="button"
+          accessibilityLabel="Buka deteksi anomali"
+        >
           <Ionicons name="alert-circle-outline" size={25} color={NAVY} />
 
           <View style={styles.anomalyInfo}>
