@@ -26,29 +26,42 @@ export default function LoginScreen() {
   const [nimError, setNimError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
+  const validateNim = (value: string) => {
+    if (!value.trim()) {
+      return 'NIM wajib diisi';
+    }
+
+    if (!/^\d+$/.test(value.trim())) {
+      return 'NIM harus berupa angka';
+    }
+
+    return '';
+  };
+
+  const validatePassword = (value: string) => {
+    if (!value) {
+      return 'Kata sandi wajib diisi';
+    }
+
+    if (value.length < 8) {
+      return 'Kata sandi minimal 8 karakter';
+    }
+
+    return '';
+  };
+
   const handleLogin = () => {
-    setNimError('');
-    setPasswordError('');
+    const nimValidation = validateNim(nim);
+    const passwordValidation = validatePassword(password);
 
-    let valid = true;
+    setNimError(nimValidation);
+    setPasswordError(passwordValidation);
 
-    if (!nim.trim()) {
-      setNimError('NIM wajib diisi');
-      valid = false;
-    } else if (!/^\d+$/.test(nim.trim())) {
-      setNimError('NIM harus berupa angka');
-      valid = false;
+    if (nimValidation || passwordValidation) {
+      return;
     }
 
-    if (!password) {
-      setPasswordError('Kata sandi wajib diisi');
-      valid = false;
-    }
-
-    if (!valid) return;
-
-    // Navigasi ke Dashboard.
-    // Belum melakukan autentikasi ke backend.
+    // Catatan: belum ada pemeriksaan akun melalui backend.
     router.replace('/');
   };
 
@@ -74,6 +87,7 @@ export default function LoginScreen() {
           </View>
 
           <View style={styles.form}>
+            {/* Kolom NIM */}
             <View style={styles.field}>
               <Text style={styles.label}>NIM</Text>
 
@@ -88,7 +102,7 @@ export default function LoginScreen() {
                 value={nim}
                 onChangeText={(value) => {
                   setNim(value);
-                  setNimError('');
+                  setNimError(validateNim(value));
                 }}
                 onFocus={() => setFocused('nim')}
                 onBlur={() => setFocused('')}
@@ -99,11 +113,17 @@ export default function LoginScreen() {
 
               {!!nimError && (
                 <Text style={styles.errorText}>
-                  <Ionicons name="alert-circle" size={14} /> {nimError}
+                  <Ionicons
+                    name="alert-circle"
+                    size={14}
+                    color={RED}
+                  />{' '}
+                  {nimError}
                 </Text>
               )}
             </View>
 
+            {/* Kolom Kata Sandi */}
             <View style={styles.field}>
               <Text style={styles.label}>Kata Sandi</Text>
 
@@ -121,7 +141,7 @@ export default function LoginScreen() {
                   value={password}
                   onChangeText={(value) => {
                     setPassword(value);
-                    setPasswordError('');
+                    setPasswordError(validatePassword(value));
                   }}
                   onFocus={() => setFocused('password')}
                   onBlur={() => setFocused('')}
@@ -142,7 +162,9 @@ export default function LoginScreen() {
                 >
                   <Ionicons
                     name={
-                      showPassword ? 'eye-outline' : 'eye-off-outline'
+                      showPassword
+                        ? 'eye-outline'
+                        : 'eye-off-outline'
                     }
                     size={23}
                     color={NAVY}
@@ -152,11 +174,17 @@ export default function LoginScreen() {
 
               {!!passwordError && (
                 <Text style={styles.errorText}>
-                  <Ionicons name="alert-circle" size={14} /> {passwordError}
+                  <Ionicons
+                    name="alert-circle"
+                    size={14}
+                    color={RED}
+                  />{' '}
+                  {passwordError}
                 </Text>
               )}
             </View>
 
+            {/* Tombol Masuk */}
             <Pressable
               style={({ pressed }) => [
                 styles.button,
@@ -175,15 +203,23 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  safeArea: { flex: 1, backgroundColor: '#FFFFFF' },
+  flex: {
+    flex: 1,
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
   content: {
     flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: '8.3%',
     paddingVertical: 35,
   },
-  logo: { alignItems: 'center', marginBottom: 90 },
+  logo: {
+    alignItems: 'center',
+    marginBottom: 90,
+  },
   logoText: {
     color: NAVY,
     fontSize: 36,
@@ -191,8 +227,12 @@ const styles = StyleSheet.create({
     marginTop: 24,
     letterSpacing: 0.5,
   },
-  form: { width: '100%' },
-  field: { marginBottom: 26 },
+  form: {
+    width: '100%',
+  },
+  field: {
+    marginBottom: 26,
+  },
   label: {
     color: NAVY,
     fontSize: 16,
@@ -228,9 +268,18 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: NAVY,
   },
-  focused: { borderColor: '#315ED1', borderWidth: 2.5 },
-  errorBorder: { borderColor: RED },
-  errorText: { color: RED, fontSize: 12, marginTop: 7 },
+  focused: {
+    borderColor: '#315ED1',
+    borderWidth: 2.5,
+  },
+  errorBorder: {
+    borderColor: RED,
+  },
+  errorText: {
+    color: RED,
+    fontSize: 12,
+    marginTop: 7,
+  },
   button: {
     minHeight: 68,
     backgroundColor: NAVY,
@@ -238,7 +287,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 2,
   },
-  buttonPressed: { opacity: 0.8 },
+  buttonPressed: {
+    opacity: 0.8,
+  },
   buttonText: {
     color: '#FFFFFF',
     fontSize: 26,
