@@ -56,7 +56,7 @@ export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
       if (!result.canceled && result.assets && result.assets.length > 0 && result.assets[0].uri) {
         setProfileImage(result.assets[0].uri);
       }
-    } catch (error) {
+    } catch {
       Alert.alert('Error', 'Terjadi kesalahan saat memilih gambar.');
     }
   };

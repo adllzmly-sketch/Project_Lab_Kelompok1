@@ -26,6 +26,14 @@
     "plugins": [
       "expo-router",
       [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Izinkan aplikasi menggunakan kamera untuk mengambil foto bukti transaksi.",
+          "photosPermission": "Izinkan aplikasi memilih foto sebagai bukti transaksi.",
+          "microphonePermission": false
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#208AEF",
