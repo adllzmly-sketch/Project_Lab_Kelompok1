@@ -15,8 +15,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
-const NAVY = '#193779';
-const RED = '#FF3030';
+const NAVY = '#142F70';
+const BLUE = 'rgba(20, 47, 112, 0.7)';
+const GREEN = '#00FF40';
+const RED = '#F70005';
 
 export default function LoginScreen() {
   const [nim, setNim] = useState('');
@@ -27,26 +29,16 @@ export default function LoginScreen() {
   const [passwordError, setPasswordError] = useState('');
 
   const validateNim = (value: string) => {
-    if (!value.trim()) {
-      return 'NIM wajib diisi';
-    }
-
-    if (!/^\d+$/.test(value.trim())) {
-      return 'NIM harus berupa angka';
-    }
-
+    if (!value.trim()) return 'NIM wajib diisi';
+    if (!/^\d+$/.test(value.trim())) return 'NIM harus berupa angka';
     return '';
   };
 
   const validatePassword = (value: string) => {
-    if (!value) {
-      return 'Kata sandi wajib diisi';
-    }
-
+    if (!value) return 'Kata sandi wajib diisi';
     if (value.length < 8) {
       return 'Kata sandi minimal 8 karakter';
     }
-
     return '';
   };
 
@@ -57,20 +49,15 @@ export default function LoginScreen() {
     setNimError(nimValidation);
     setPasswordError(passwordValidation);
 
-    if (nimValidation || passwordValidation) {
-      return;
-    }
+    if (nimValidation || passwordValidation) return;
 
-    // Catatan: belum ada pemeriksaan akun melalui backend.
+    // Belum terhubung ke autentikasi backend.
     router.replace('/');
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor="#FFFFFF"
-      />
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
       <KeyboardAvoidingView
         style={styles.flex}
@@ -87,7 +74,7 @@ export default function LoginScreen() {
           </View>
 
           <View style={styles.form}>
-            {/* Kolom NIM */}
+            {/* Input NIM */}
             <View style={styles.field}>
               <Text style={styles.label}>NIM</Text>
 
@@ -98,7 +85,7 @@ export default function LoginScreen() {
                   nimError !== '' && styles.errorBorder,
                 ]}
                 placeholder="Masukkan NIM"
-                placeholderTextColor="#8B9ABE"
+                placeholderTextColor="#D6DFF5"
                 value={nim}
                 onChangeText={(value) => {
                   setNim(value);
@@ -113,17 +100,13 @@ export default function LoginScreen() {
 
               {!!nimError && (
                 <Text style={styles.errorText}>
-                  <Ionicons
-                    name="alert-circle"
-                    size={14}
-                    color={RED}
-                  />{' '}
+                  <Ionicons name="alert-circle" size={14} color={RED} />{' '}
                   {nimError}
                 </Text>
               )}
             </View>
 
-            {/* Kolom Kata Sandi */}
+            {/* Input Kata Sandi */}
             <View style={styles.field}>
               <Text style={styles.label}>Kata Sandi</Text>
 
@@ -137,7 +120,7 @@ export default function LoginScreen() {
                 <TextInput
                   style={styles.passwordInput}
                   placeholder="Masukkan Kata Sandi"
-                  placeholderTextColor="#8B9ABE"
+                  placeholderTextColor="#D6DFF5"
                   value={password}
                   onChangeText={(value) => {
                     setPassword(value);
@@ -162,9 +145,7 @@ export default function LoginScreen() {
                 >
                   <Ionicons
                     name={
-                      showPassword
-                        ? 'eye-outline'
-                        : 'eye-off-outline'
+                      showPassword ? 'eye-outline' : 'eye-off-outline'
                     }
                     size={23}
                     color={NAVY}
@@ -174,11 +155,7 @@ export default function LoginScreen() {
 
               {!!passwordError && (
                 <Text style={styles.errorText}>
-                  <Ionicons
-                    name="alert-circle"
-                    size={14}
-                    color={RED}
-                  />{' '}
+                  <Ionicons name="alert-circle" size={14} color={RED} />{' '}
                   {passwordError}
                 </Text>
               )}
@@ -246,8 +223,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 18,
     fontSize: 17,
-    color: NAVY,
-    backgroundColor: '#FFFFFF',
+    color: '#FFFFFF',
+    backgroundColor: BLUE,
   },
   passwordBox: {
     minHeight: 62,
@@ -258,7 +235,7 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: BLUE,
   },
   passwordInput: {
     flex: 1,
@@ -266,10 +243,10 @@ const styles = StyleSheet.create({
     height: 58,
     paddingRight: 12,
     fontSize: 17,
-    color: NAVY,
+    color: '#FFFFFF',
   },
   focused: {
-    borderColor: '#315ED1',
+    borderColor: NAVY,
     borderWidth: 2.5,
   },
   errorBorder: {
@@ -283,9 +260,12 @@ const styles = StyleSheet.create({
   button: {
     minHeight: 68,
     backgroundColor: NAVY,
+    borderWidth: 1,
+    borderColor: NAVY,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 2,
+    borderRadius: 12,
   },
   buttonPressed: {
     opacity: 0.8,
