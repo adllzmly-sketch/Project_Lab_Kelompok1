@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Animated, Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -50,9 +50,8 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState('Dashboard');
 
-  const slideAnim = useRef(new Animated.Value(-SIDEBAR_WIDTH)).current;
-
-  const iconRotateAnim = useRef(new Animated.Value(0)).current;
+  const [slideAnim] = useState(() => new Animated.Value(-SIDEBAR_WIDTH));
+  const [iconRotateAnim] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
     Animated.parallel([
@@ -121,10 +120,7 @@ export default function Header() {
   const handleProfile = () => {
     setActiveMenu('Profile');
     closeMenu();
-
-    // Route halaman profile sesuaikan jika sudah dibuat.
-    // Contoh:
-    // router.push('/admin/profile');
+    router.push('/admin/profil');
   };
 
   const handleMenuPress = (key: string) => {
