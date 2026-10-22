@@ -86,7 +86,7 @@ export default function Header() {
   const handleDashboard = () => {
     setActiveMenu('Dashboard');
     closeMenu();
-    router.push('/admin/');
+    router.push('/admin');
   };
   const handlePemasukan = () => {
     setActiveMenu('Pemasukan');

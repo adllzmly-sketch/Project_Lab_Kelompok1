@@ -9,10 +9,10 @@ import Header from '@/components/Header';
    WARNA
 ===================================================== */
 
-const NAVY = '#193779';
-const MUTED = '#8B9ABE';
-const GREEN = '#39F15B';
-const RED = '#FF3030';
+const NAVY = '#142F70';
+const MUTED = 'rgba(20, 47, 112, 0.7)';
+const GREEN = '#00FF40';
+const RED = '#F70005';
 
 /* =====================================================
    DATA GRAFIK
