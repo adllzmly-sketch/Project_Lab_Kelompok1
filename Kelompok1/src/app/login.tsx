@@ -19,26 +19,24 @@ const NAVY = '#193779';
 const RED = '#FF3030';
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
+  const [nim, setNim] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [focused, setFocused] = useState('');
-  const [emailError, setEmailError] = useState('');
+  const [nimError, setNimError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
   const handleLogin = () => {
-    setEmailError('');
+    setNimError('');
     setPasswordError('');
 
     let valid = true;
 
-    if (!email.trim()) {
-      setEmailError('Email wajib diisi');
+    if (!nim.trim()) {
+      setNimError('NIM wajib diisi');
       valid = false;
-    } else if (
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
-    ) {
-      setEmailError('Format email tidak valid');
+    } else if (!/^\d+$/.test(nim.trim())) {
+      setNimError('NIM harus berupa angka');
       valid = false;
     }
 
@@ -49,7 +47,8 @@ export default function LoginScreen() {
 
     if (!valid) return;
 
-    // Kembali ke beranda asli tanpa mengganti isinya.
+    // Navigasi ke Dashboard.
+    // Belum melakukan autentikasi ke backend.
     router.replace('/');
   };
 
@@ -76,33 +75,31 @@ export default function LoginScreen() {
 
           <View style={styles.form}>
             <View style={styles.field}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={styles.label}>NIM</Text>
 
               <TextInput
                 style={[
                   styles.input,
-                  focused === 'email' && styles.focused,
-                  emailError !== '' && styles.errorBorder,
+                  focused === 'nim' && styles.focused,
+                  nimError !== '' && styles.errorBorder,
                 ]}
-                placeholder="Masukkan Email"
+                placeholder="Masukkan NIM"
                 placeholderTextColor="#8B9ABE"
-                value={email}
+                value={nim}
                 onChangeText={(value) => {
-                  setEmail(value);
-                  setEmailError('');
+                  setNim(value);
+                  setNimError('');
                 }}
-                onFocus={() => setFocused('email')}
+                onFocus={() => setFocused('nim')}
                 onBlur={() => setFocused('')}
-                keyboardType="email-address"
+                keyboardType="number-pad"
                 autoCapitalize="none"
                 autoCorrect={false}
-                autoComplete="email"
               />
 
-              {!!emailError && (
+              {!!nimError && (
                 <Text style={styles.errorText}>
-                  <Ionicons name="alert-circle" size={14} />{' '}
-                  {emailError}
+                  <Ionicons name="alert-circle" size={14} /> {nimError}
                 </Text>
               )}
             </View>
@@ -130,7 +127,7 @@ export default function LoginScreen() {
                   onBlur={() => setFocused('')}
                   secureTextEntry={!showPassword}
                   autoCapitalize="none"
-                  autoComplete="current-password"
+                  autoCorrect={false}
                 />
 
                 <Pressable
@@ -155,8 +152,7 @@ export default function LoginScreen() {
 
               {!!passwordError && (
                 <Text style={styles.errorText}>
-                  <Ionicons name="alert-circle" size={14} />{' '}
-                  {passwordError}
+                  <Ionicons name="alert-circle" size={14} /> {passwordError}
                 </Text>
               )}
             </View>
@@ -179,23 +175,15 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
+  flex: { flex: 1 },
+  safeArea: { flex: 1, backgroundColor: '#FFFFFF' },
   content: {
     flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: '8.3%',
     paddingVertical: 35,
   },
-  logo: {
-    alignItems: 'center',
-    marginBottom: 90,
-  },
+  logo: { alignItems: 'center', marginBottom: 90 },
   logoText: {
     color: NAVY,
     fontSize: 36,
@@ -203,12 +191,8 @@ const styles = StyleSheet.create({
     marginTop: 24,
     letterSpacing: 0.5,
   },
-  form: {
-    width: '100%',
-  },
-  field: {
-    marginBottom: 26,
-  },
+  form: { width: '100%' },
+  field: { marginBottom: 26 },
   label: {
     color: NAVY,
     fontSize: 16,
@@ -244,18 +228,9 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: NAVY,
   },
-  focused: {
-    borderColor: '#315ED1',
-    borderWidth: 2.5,
-  },
-  errorBorder: {
-    borderColor: RED,
-  },
-  errorText: {
-    color: RED,
-    fontSize: 12,
-    marginTop: 7,
-  },
+  focused: { borderColor: '#315ED1', borderWidth: 2.5 },
+  errorBorder: { borderColor: RED },
+  errorText: { color: RED, fontSize: 12, marginTop: 7 },
   button: {
     minHeight: 68,
     backgroundColor: NAVY,
@@ -263,9 +238,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 2,
   },
-  buttonPressed: {
-    opacity: 0.8,
-  },
+  buttonPressed: { opacity: 0.8 },
   buttonText: {
     color: '#FFFFFF',
     fontSize: 26,
