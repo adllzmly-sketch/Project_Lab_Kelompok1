@@ -1,58 +1,45 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Animated, Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, usePathname } from 'expo-router';
 
 const NAVY = '#142F70';
-
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const SIDEBAR_WIDTH = Math.min(SCREEN_WIDTH * 0.5, 250);
+const SIDEBAR_WIDTH = Math.min(SCREEN_WIDTH * 0.72, 280);
 
-const menuItems = [
-  {
-    title: 'Dashboard',
-    icon: 'grid-outline',
-    key: 'dashboard',
-  },
-  {
-    title: 'Pemasukan',
-    icon: 'trending-up-outline',
-    key: 'pemasukan',
-  },
-  {
-    title: 'Pengeluaran',
-    icon: 'trending-down-outline',
-    key: 'pengeluaran',
-  },
-  {
-    title: 'Kelola Transaksi',
-    icon: 'receipt-outline',
-    key: 'transaksi',
-  },
-  {
-    title: 'Laporan Keuangan',
-    icon: 'document-text-outline',
-    key: 'laporan',
-  },
-  {
-    title: 'Deteksi Anomali',
-    icon: 'alert-circle-outline',
-    key: 'anomali',
-  },
-  {
-    title: 'Profile',
-    icon: 'person-outline',
-    key: 'profile',
-  },
+type HeaderRole = 'admin' | 'user';
+
+type HeaderProps = {
+  role?: HeaderRole;
+  hideLogout?: boolean;
+};
+
+const adminMenuItems = [
+  { title: 'Dashboard', icon: 'grid-outline', key: 'dashboard', path: '/admin' },
+  { title: 'Pemasukan', icon: 'trending-up-outline', key: 'pemasukan', path: '/admin/tambah_pemasukan' },
+  { title: 'Pengeluaran', icon: 'trending-down-outline', key: 'pengeluaran', path: '/admin/read_pengeluaran' },
+  { title: 'Kelola Transaksi', icon: 'receipt-outline', key: 'transaksi', path: '/admin/daftar_transaksi' },
+  { title: 'Laporan Keuangan', icon: 'document-text-outline', key: 'laporan', path: '/admin/laporan_keuangan' },
+  { title: 'Deteksi Anomali', icon: 'alert-circle-outline', key: 'anomali', path: '/admin/deteksi-anomali' },
+  { title: 'Profil', icon: 'person-outline', key: 'profile', path: '/admin/profil' },
 ] as const;
 
-export default function Header() {
+const userMenuItems = [
+  { title: 'Dashboard', icon: 'grid-outline', key: 'dashboard', path: '/user/dashboard' },
+  { title: 'Kelola Transaksi', icon: 'receipt-outline', key: 'transaksi', path: '/user/daftar_transaksi' },
+  { title: 'Laporan Keuangan', icon: 'document-text-outline', key: 'laporan', path: '/user/laporan_keuangan' },
+  { title: 'Profil', icon: 'person-outline', key: 'profile', path: '/user/profil' },
+] as const;
+
+export default function Header({ role, hideLogout = false }: HeaderProps) {
+  const pathname = usePathname();
+  const inferredRole: HeaderRole = role ?? (pathname.startsWith('/user') ? 'user' : 'admin');
+  const menuItems = inferredRole === 'admin' ? adminMenuItems : userMenuItems;
+  const activeMenu = getActiveMenu(pathname, inferredRole);
+
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeMenu, setActiveMenu] = useState('Dashboard');
-
-  const slideAnim = useRef(new Animated.Value(-SIDEBAR_WIDTH)).current;
-
-  const iconRotateAnim = useRef(new Animated.Value(0)).current;
+  const [slideAnim] = useState(() => new Animated.Value(-SIDEBAR_WIDTH));
+  const [iconRotateAnim] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
     Animated.parallel([
@@ -61,7 +48,6 @@ export default function Header() {
         duration: menuOpen ? 250 : 200,
         useNativeDriver: true,
       }),
-
       Animated.timing(iconRotateAnim, {
         toValue: menuOpen ? 1 : 0,
         duration: 220,
@@ -75,106 +61,25 @@ export default function Header() {
     outputRange: ['0deg', '90deg'],
   });
 
-  const toggleMenu = () => {
-    setMenuOpen((prev) => !prev);
-  };
-
-  const closeMenu = () => {
-    setMenuOpen(false);
-  };
-
-  const handleDashboard = () => {
-    setActiveMenu('Dashboard');
+  const closeMenu = () => setMenuOpen(false);
+  const handleMenuPress = (path: string) => {
     closeMenu();
-    router.push('/admin');
-  };
-  const handlePemasukan = () => {
-    setActiveMenu('Pemasukan');
-    closeMenu();
-    router.push('/admin/tambah_pemasukan');
-  };
-
-  const handlePengeluaran = () => {
-    setActiveMenu('Pengeluaran');
-    closeMenu();
-    router.push('/admin/read_pengeluaran');
-  };
-
-  const handleTransaksi = () => {
-    setActiveMenu('Kelola Transaksi');
-    closeMenu();
-    router.push('/admin/daftar_transaksi');
-  };
-
-  const handleLaporan = () => {
-    setActiveMenu('Laporan Keuangan');
-    closeMenu();
-    router.push('/admin/laporan_keuangan');
-  };
-
-  const handleAnomali = () => {
-    setActiveMenu('Deteksi Anomali');
-    closeMenu();
-    router.push('/admin/deteksi-anomali');
-  };
-
-  const handleProfile = () => {
-    setActiveMenu('Profile');
-    closeMenu();
-
-    // Route halaman profile sesuaikan jika sudah dibuat.
-    // Contoh:
-    // router.push('/admin/profile');
-  };
-
-  const handleMenuPress = (key: string) => {
-    switch (key) {
-      case 'dashboard':
-        handleDashboard();
-        break;
-
-      case 'pemasukan':
-        handlePemasukan();
-        break;
-
-      case 'pengeluaran':
-        handlePengeluaran();
-        break;
-
-      case 'transaksi':
-        handleTransaksi();
-        break;
-
-      case 'laporan':
-        handleLaporan();
-        break;
-
-      case 'anomali':
-        handleAnomali();
-        break;
-
-      case 'profile':
-        handleProfile();
-        break;
-    }
+    router.push(path as never);
   };
 
   return (
     <>
-      {/* HEADER */}
       <View style={styles.header}>
-        {/* TOMBOL DRAWER */}
-        <Pressable style={styles.menuButton} onPress={toggleMenu}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={menuOpen ? 'Tutup menu' : 'Buka menu'}
+          style={styles.menuButton}
+          onPress={() => setMenuOpen((prev) => !prev)}
+        >
           <Animated.View
             style={[
               styles.customIconContainer,
-              {
-                transform: [
-                  {
-                    rotate: iconRotation,
-                  },
-                ],
-              },
+              { transform: [{ rotate: iconRotation }] },
             ]}
           >
             <View style={styles.iconBarLong} />
@@ -183,35 +88,46 @@ export default function Header() {
           </Animated.View>
         </Pressable>
 
-        {/* BRAND KASINO */}
         <View style={styles.brand}>
           <Ionicons name="wallet-outline" size={29} color="#FFFFFF" />
-
           <Text style={styles.brandText}>KASINO</Text>
         </View>
       </View>
 
-      {/* DRAWER */}
+      {menuOpen ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Tutup menu"
+          style={styles.backdrop}
+          onPress={closeMenu}
+        />
+      ) : null}
+
       <Animated.View
+        pointerEvents={menuOpen ? 'auto' : 'none'}
         style={[
           styles.sidebar,
           {
-            transform: [
-              {
-                translateX: slideAnim,
-              },
-            ],
+            width: SIDEBAR_WIDTH,
+            transform: [{ translateX: slideAnim }],
           },
         ]}
       >
         <View style={styles.menuContainer}>
           {menuItems.map((item) => {
             const isActive = activeMenu === item.title;
-
             return (
-              <Pressable key={item.key} onPress={() => handleMenuPress(item.key)} style={({ pressed }) => [styles.menuItem, isActive && styles.activeMenuItem, pressed && styles.pressedMenuItem]}>
+              <Pressable
+                key={item.key}
+                accessibilityRole="button"
+                onPress={() => handleMenuPress(item.path)}
+                style={({ pressed }) => [
+                  styles.menuItem,
+                  isActive && styles.activeMenuItem,
+                  pressed && styles.pressedMenuItem,
+                ]}
+              >
                 <Ionicons name={item.icon} size={22} color="#FFFFFF" />
-
                 <Text style={styles.menuText}>{item.title}</Text>
               </Pressable>
             );
@@ -222,155 +138,131 @@ export default function Header() {
   );
 }
 
-const styles = StyleSheet.create({
-  /* =========================
-     HEADER
-  ========================= */
+function getActiveMenu(pathname: string, role: HeaderRole) {
+  if (role === 'user') {
+    if (pathname.startsWith('/user/dashboard')) return 'Dashboard';
+    if (
+      pathname.startsWith('/user/daftar_transaksi') ||
+      pathname.startsWith('/user/detail_transaksi')
+    ) return 'Kelola Transaksi';
+    if (pathname.startsWith('/user/laporan_keuangan')) return 'Laporan Keuangan';
+    if (pathname.startsWith('/user/profil')) return 'Profil';
+    return '';
+  }
 
+  if (pathname === '/admin' || pathname.startsWith('/admin/dashboard')) return 'Dashboard';
+  if (pathname.startsWith('/admin/tambah_pemasukan')) return 'Pemasukan';
+  if (pathname.startsWith('/admin/read_pengeluaran')) return 'Pengeluaran';
+  if (
+    pathname.startsWith('/admin/daftar_transaksi') ||
+    pathname.startsWith('/admin/detail_transaksi')
+  ) return 'Kelola Transaksi';
+  if (pathname.startsWith('/admin/laporan_keuangan')) return 'Laporan Keuangan';
+  if (pathname.startsWith('/admin/deteksi-anomali')) return 'Deteksi Anomali';
+  if (pathname.startsWith('/admin/profil')) return 'Profil';
+  return '';
+}
+
+const styles = StyleSheet.create({
   header: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-
     height: 62,
-
     backgroundColor: NAVY,
-
     paddingHorizontal: 22,
-
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-
+    justifyContent: 'flex-start',
     zIndex: 999,
     elevation: 999,
   },
-
   menuButton: {
     width: 42,
     height: 42,
-
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
-
-  /* =========================
-     CUSTOM MENU ICON
-  ========================= */
-
   customIconContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-
     gap: 4,
-
     width: 28,
     height: 28,
-
     justifyContent: 'center',
   },
-
   iconBarLong: {
     width: 3.5,
     height: 22,
-
     backgroundColor: '#FFFFFF',
-
     borderRadius: 2,
   },
-
   iconBarMedium: {
     width: 3.5,
     height: 15,
-
     backgroundColor: '#FFFFFF',
-
     borderRadius: 2,
   },
-
   iconBarShort: {
     width: 3.5,
     height: 9,
-
     backgroundColor: '#FFFFFF',
-
     borderRadius: 2,
   },
-
-  /* =========================
-     BRAND
-  ========================= */
-
   brand: {
     flexDirection: 'row',
     alignItems: 'center',
-
     gap: 8,
+    marginLeft: 'auto',
   },
-
   brandText: {
     color: '#FFFFFF',
-
     fontSize: 20,
     fontWeight: '700',
-
     letterSpacing: 0.5,
   },
-
-  /* =========================
-     DRAWER
-  ========================= */
-
+  backdrop: {
+    position: 'absolute',
+    top: 62,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.28)',
+    zIndex: 90,
+  },
   sidebar: {
     position: 'absolute',
-
     top: 62,
     left: 0,
     bottom: 0,
-
-    width: SIDEBAR_WIDTH,
-
     backgroundColor: NAVY,
-
     paddingTop: 15,
     paddingBottom: 20,
-
     zIndex: 100,
     elevation: 100,
   },
-
   menuContainer: {
     width: '100%',
   },
-
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-
     gap: 14,
-
     paddingVertical: 15,
     paddingHorizontal: 22,
-
     marginHorizontal: 8,
-
     borderRadius: 8,
   },
-
   activeMenuItem: {
     backgroundColor: 'rgba(255,255,255,0.14)',
   },
-
   pressedMenuItem: {
     backgroundColor: 'rgba(255,255,255,0.22)',
   },
-
   menuText: {
     flexShrink: 1,
-
     color: '#FFFFFF',
-
     fontSize: 14,
     fontWeight: '500',
   },
