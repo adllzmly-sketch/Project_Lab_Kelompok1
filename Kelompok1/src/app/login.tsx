@@ -15,50 +15,49 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
-const NAVY = '#193779';
-const RED = '#FF3030';
+const NAVY = '#142F70';
+const BLUE = 'rgba(20, 47, 112, 0.7)';
+const GREEN = '#00FF40';
+const RED = '#F70005';
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
+  const [nim, setNim] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [focused, setFocused] = useState('');
-  const [emailError, setEmailError] = useState('');
+  const [nimError, setNimError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
+  const validateNim = (value: string) => {
+    if (!value.trim()) return 'NIM wajib diisi';
+    if (!/^\d+$/.test(value.trim())) return 'NIM harus berupa angka';
+    return '';
+  };
+
+  const validatePassword = (value: string) => {
+    if (!value) return 'Kata sandi wajib diisi';
+    if (value.length < 8) {
+      return 'Kata sandi minimal 8 karakter';
+    }
+    return '';
+  };
+
   const handleLogin = () => {
-    setEmailError('');
-    setPasswordError('');
+    const nimValidation = validateNim(nim);
+    const passwordValidation = validatePassword(password);
 
-    let valid = true;
+    setNimError(nimValidation);
+    setPasswordError(passwordValidation);
 
-    if (!email.trim()) {
-      setEmailError('Email wajib diisi');
-      valid = false;
-    } else if (
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
-    ) {
-      setEmailError('Format email tidak valid');
-      valid = false;
-    }
+    if (nimValidation || passwordValidation) return;
 
-    if (!password) {
-      setPasswordError('Kata sandi wajib diisi');
-      valid = false;
-    }
-
-    if (!valid) return;
-
-    // Kembali ke beranda asli tanpa mengganti isinya.
+    // Belum terhubung ke autentikasi backend.
     router.replace('/');
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor="#FFFFFF"
-      />
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
       <KeyboardAvoidingView
         style={styles.flex}
@@ -75,38 +74,39 @@ export default function LoginScreen() {
           </View>
 
           <View style={styles.form}>
+            {/* Input NIM */}
             <View style={styles.field}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={styles.label}>NIM</Text>
 
               <TextInput
                 style={[
                   styles.input,
-                  focused === 'email' && styles.focused,
-                  emailError !== '' && styles.errorBorder,
+                  focused === 'nim' && styles.focused,
+                  nimError !== '' && styles.errorBorder,
                 ]}
-                placeholder="Masukkan Email"
-                placeholderTextColor="#8B9ABE"
-                value={email}
+                placeholder="Masukkan NIM"
+                placeholderTextColor="#D6DFF5"
+                value={nim}
                 onChangeText={(value) => {
-                  setEmail(value);
-                  setEmailError('');
+                  setNim(value);
+                  setNimError(validateNim(value));
                 }}
-                onFocus={() => setFocused('email')}
+                onFocus={() => setFocused('nim')}
                 onBlur={() => setFocused('')}
-                keyboardType="email-address"
+                keyboardType="number-pad"
                 autoCapitalize="none"
                 autoCorrect={false}
-                autoComplete="email"
               />
 
-              {!!emailError && (
+              {!!nimError && (
                 <Text style={styles.errorText}>
-                  <Ionicons name="alert-circle" size={14} />{' '}
-                  {emailError}
+                  <Ionicons name="alert-circle" size={14} color={RED} />{' '}
+                  {nimError}
                 </Text>
               )}
             </View>
 
+            {/* Input Kata Sandi */}
             <View style={styles.field}>
               <Text style={styles.label}>Kata Sandi</Text>
 
@@ -120,17 +120,17 @@ export default function LoginScreen() {
                 <TextInput
                   style={styles.passwordInput}
                   placeholder="Masukkan Kata Sandi"
-                  placeholderTextColor="#8B9ABE"
+                  placeholderTextColor="#D6DFF5"
                   value={password}
                   onChangeText={(value) => {
                     setPassword(value);
-                    setPasswordError('');
+                    setPasswordError(validatePassword(value));
                   }}
                   onFocus={() => setFocused('password')}
                   onBlur={() => setFocused('')}
                   secureTextEntry={!showPassword}
                   autoCapitalize="none"
-                  autoComplete="current-password"
+                  autoCorrect={false}
                 />
 
                 <Pressable
@@ -155,12 +155,13 @@ export default function LoginScreen() {
 
               {!!passwordError && (
                 <Text style={styles.errorText}>
-                  <Ionicons name="alert-circle" size={14} />{' '}
+                  <Ionicons name="alert-circle" size={14} color={RED} />{' '}
                   {passwordError}
                 </Text>
               )}
             </View>
 
+            {/* Tombol Masuk */}
             <Pressable
               style={({ pressed }) => [
                 styles.button,
@@ -222,8 +223,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 18,
     fontSize: 17,
-    color: NAVY,
-    backgroundColor: '#FFFFFF',
+    color: '#FFFFFF',
+    backgroundColor: BLUE,
   },
   passwordBox: {
     minHeight: 62,
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: BLUE,
   },
   passwordInput: {
     flex: 1,
@@ -242,10 +243,10 @@ const styles = StyleSheet.create({
     height: 58,
     paddingRight: 12,
     fontSize: 17,
-    color: NAVY,
+    color: '#FFFFFF',
   },
   focused: {
-    borderColor: '#315ED1',
+    borderColor: NAVY,
     borderWidth: 2.5,
   },
   errorBorder: {
@@ -259,9 +260,12 @@ const styles = StyleSheet.create({
   button: {
     minHeight: 68,
     backgroundColor: NAVY,
+    borderWidth: 1,
+    borderColor: NAVY,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 2,
+    borderRadius: 12,
   },
   buttonPressed: {
     opacity: 0.8,
