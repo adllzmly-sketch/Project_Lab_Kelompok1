@@ -7,6 +7,7 @@ export type Transaction = {
   description: string;
   amount: number;
   source: string;
+  category?: string;
   note: string;
   proof: string;
 };
@@ -26,13 +27,13 @@ const FinanceContext = createContext<FinanceContextValue | null>(null);
 
 export function FinanceProvider({ children }: { children: ReactNode }) {
   const [transactions, setTransactions] = useState(initialTransactions);
-  const value = useMemo<FinanceContextValue>(() => ({
-    transactions,
-    addTransaction: transaction => setTransactions(current => [
-      { ...transaction, id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}` },
-      ...current,
-    ]),
-  }), [transactions]);
+  const value = useMemo<FinanceContextValue>(
+    () => ({
+      transactions,
+      addTransaction: (transaction) => setTransactions((current) => [{ ...transaction, id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}` }, ...current]),
+    }),
+    [transactions],
+  );
   return <FinanceContext.Provider value={value}>{children}</FinanceContext.Provider>;
 }
 

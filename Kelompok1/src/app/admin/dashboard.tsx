@@ -1,2 +1,4 @@
 import { FinanceDashboard } from '../../components/finance-dashboard';
-export default function Dashboard() { return <FinanceDashboard role="admin" />; }
+export default function Dashboard() {
+  return <FinanceDashboard role="user" />;
+}

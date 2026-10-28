@@ -8,7 +8,11 @@ const NAVY = '#142F70';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SIDEBAR_WIDTH = Math.min(SCREEN_WIDTH * 0.5, 250);
 
-const menuItems = [
+/* =========================
+   MENU ADMIN
+========================= */
+
+const adminMenuItems = [
   {
     title: 'Dashboard',
     icon: 'grid-outline',
@@ -46,13 +50,52 @@ const menuItems = [
   },
 ] as const;
 
-export default function Header() {
+/* =========================
+   MENU USER
+========================= */
+
+const userMenuItems = [
+  {
+    title: 'Dashboard',
+    icon: 'grid-outline',
+    key: 'dashboard',
+  },
+  {
+    title: 'Riwayat Transaksi',
+    icon: 'receipt-outline',
+    key: 'riwayat',
+  },
+  {
+    title: 'Laporan Keuangan',
+    icon: 'document-text-outline',
+    key: 'laporan',
+  },
+  {
+    title: 'Profile',
+    icon: 'person-outline',
+    key: 'profile',
+  },
+] as const;
+
+/* =========================
+   PROPS
+========================= */
+
+type HeaderProps = {
+  role?: 'admin' | 'user';
+};
+
+export default function Header({ role = 'admin' }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+
   const pathname = usePathname();
   const activeMenu = getActiveMenu(pathname);
 
   const [slideAnim] = useState(() => new Animated.Value(-SIDEBAR_WIDTH));
+
   const [iconRotateAnim] = useState(() => new Animated.Value(0));
+
+  const currentMenuItems = role === 'user' ? userMenuItems : adminMenuItems;
 
   useEffect(() => {
     Animated.parallel([
@@ -83,10 +126,15 @@ export default function Header() {
     setMenuOpen(false);
   };
 
+  /* =========================
+     NAVIGASI ADMIN
+  ========================= */
+
   const handleDashboard = () => {
     closeMenu();
     router.push('/admin');
   };
+
   const handlePemasukan = () => {
     closeMenu();
     router.push('/admin/tambah_pemasukan');
@@ -149,11 +197,57 @@ export default function Header() {
     }
   };
 
+  /* =========================
+     NAVIGASI USER
+  ========================= */
+
+  const handleUserDashboard = () => {
+    closeMenu();
+    router.push('/user/dashboard');
+  };
+
+  const handleUserRiwayat = () => {
+    closeMenu();
+    router.push('/user/daftar_transaksi');
+  };
+
+  const handleUserLaporan = () => {
+    closeMenu();
+    router.push('/user/laporan_keuangan');
+  };
+
+  const handleUserProfile = () => {
+    closeMenu();
+    router.push('/user/profil');
+  };
+
+  const handleUserMenuPress = (key: string) => {
+    switch (key) {
+      case 'dashboard':
+        handleUserDashboard();
+        break;
+
+      case 'riwayat':
+        handleUserRiwayat();
+        break;
+
+      case 'laporan':
+        handleUserLaporan();
+        break;
+
+      case 'profile':
+        handleUserProfile();
+        break;
+    }
+  };
+
   return (
     <>
       {/* HEADER */}
+
       <View style={styles.header}>
         {/* TOMBOL DRAWER */}
+
         <Pressable style={styles.menuButton} onPress={toggleMenu}>
           <Animated.View
             style={[
@@ -173,15 +267,17 @@ export default function Header() {
           </Animated.View>
         </Pressable>
 
-        {/* BRAND KASINO */}
+        {/* BRAND KASORMAWA */}
+
         <View style={styles.brand}>
           <Ionicons name="wallet-outline" size={29} color="#FFFFFF" />
 
-          <Text style={styles.brandText}>KASINO</Text>
+          <Text style={styles.brandText}>KasOrmawa</Text>
         </View>
       </View>
 
       {/* DRAWER */}
+
       <Animated.View
         style={[
           styles.sidebar,
@@ -195,11 +291,15 @@ export default function Header() {
         ]}
       >
         <View style={styles.menuContainer}>
-          {menuItems.map((item) => {
+          {currentMenuItems.map((item) => {
             const isActive = activeMenu === item.title;
 
             return (
-              <Pressable key={item.key} onPress={() => handleMenuPress(item.key)} style={({ pressed }) => [styles.menuItem, isActive && styles.activeMenuItem, pressed && styles.pressedMenuItem]}>
+              <Pressable
+                key={item.key}
+                onPress={() => (role === 'user' ? handleUserMenuPress(item.key) : handleMenuPress(item.key))}
+                style={({ pressed }) => [styles.menuItem, isActive && styles.activeMenuItem, pressed && styles.pressedMenuItem]}
+              >
                 <Ionicons name={item.icon} size={22} color="#FFFFFF" />
 
                 <Text style={styles.menuText}>{item.title}</Text>
@@ -212,22 +312,45 @@ export default function Header() {
   );
 }
 
+/* =========================
+   MENU AKTIF
+========================= */
+
 function getActiveMenu(pathname: string) {
+  /* ADMIN */
+
   if (pathname === '/admin' || pathname === '/admin/dashboard') return 'Dashboard';
+
   if (pathname.startsWith('/admin/tambah_pemasukan')) return 'Pemasukan';
+
   if (pathname.startsWith('/admin/read_pengeluaran')) return 'Pengeluaran';
+
   if (pathname.startsWith('/admin/daftar_transaksi') || pathname.startsWith('/admin/detail_transaksi')) return 'Kelola Transaksi';
+
   if (pathname.startsWith('/admin/laporan_keuangan')) return 'Laporan Keuangan';
+
   if (pathname.startsWith('/admin/deteksi-anomali')) return 'Deteksi Anomali';
+
   if (pathname.startsWith('/admin/profil')) return 'Profile';
+
+  /* USER */
+
+  if (pathname === '/user' || pathname === '/user/dashboard') return 'Dashboard';
+
+  if (pathname.startsWith('/user/daftar_transaksi') || pathname.startsWith('/user/detail_transaksi')) return 'Riwayat Transaksi';
+
+  if (pathname.startsWith('/user/laporan_keuangan')) return 'Laporan Keuangan';
+
+  if (pathname.startsWith('/user/profil')) return 'Profile';
+
   return '';
 }
 
-const styles = StyleSheet.create({
-  /* =========================
-     HEADER
-  ========================= */
+/* =========================
+   STYLE
+========================= */
 
+const styles = StyleSheet.create({
   header: {
     position: 'absolute',
     top: 0,
