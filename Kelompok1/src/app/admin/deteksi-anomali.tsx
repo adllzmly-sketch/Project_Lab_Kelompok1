@@ -12,13 +12,14 @@ import {
 import Svg, { Path, Circle } from 'react-native-svg';
 import { useRouter } from 'expo-router';
 import Header from '../../components/Header'; // Sesuai dengan struktur proyek sebelumnya
+import { useAppTheme } from '../../context/theme-context';
 
 // Ikon Panah Kembali
-const BackArrowIcon = () => (
+const BackArrowIcon = ({ dark = false }: { dark?: boolean }) => (
     <Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
         <Path
             d="M19 12H5M5 12L12 19M5 12L12 5"
-            stroke="#102A63"
+            stroke={dark ? '#f8fafc' : '#102A63'}
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -103,6 +104,8 @@ const AMOUNT_THRESHOLD = 1_000_000;
 export default function DeteksiAnomaliScreen() {
     const router = useRouter();
     const { transactions } = useFinance();
+    const { colorScheme } = useAppTheme();
+    const isDarkMode = colorScheme === 'dark';
 
     const [expandedIds, setExpandedIds] = useState<string[]>([]);
     const [statuses, setStatuses] = useState<AnomalyStatus>({});
@@ -285,7 +288,7 @@ export default function DeteksiAnomaliScreen() {
     );
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, isDarkMode && styles.containerDark]}>
             <Header />
 
             <View style={styles.subheader}>
@@ -293,10 +296,10 @@ export default function DeteksiAnomaliScreen() {
                     onPress={() => router.back()}
                     style={styles.backButton}
                 >
-                    <BackArrowIcon />
+                    <BackArrowIcon dark={isDarkMode} />
                 </Pressable>
 
-                <Text style={styles.pageTitle}>
+                <Text style={[styles.pageTitle, isDarkMode && styles.textDark]}>
                     Deteksi Anomali
                 </Text>
             </View>
@@ -338,7 +341,7 @@ export default function DeteksiAnomaliScreen() {
             </View>
 
             <View style={styles.listHeader}>
-                <Text style={styles.listTitle}>
+                <Text style={[styles.listTitle, isDarkMode && styles.textDark]}>
                     Daftar Transaksi yang Perlu Diperiksa
                 </Text>
             </View>
@@ -366,6 +369,8 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFFFFF',
     },
+    containerDark: { backgroundColor: '#111827' },
+    textDark: { color: '#f8fafc' },
     subheader: {
         flexDirection: 'row',
         alignItems: 'center',

@@ -15,7 +15,11 @@ export default function CatatPengeluaran() {
   const [dateFieldKey, setDateFieldKey] = useState(0);
   const [note, setNote] = useState('');
   const [proof, setProof] = useState('');
-  const canSave = Boolean(source.trim() && amount.trim() && date && note.trim() && proof);
+
+  const numericValue = Number(amount.replace(/\D/g, ''));
+  const isZeroNominal = amount.trim() !== '' && numericValue === 0;
+  const nominalError = isZeroNominal ? 'jumllah nominal harus valid jangan korup min' : '';
+  const canSave = Boolean(source.trim() && amount.trim() && !isZeroNominal && date && note.trim() && proof);
 
   const resetForm = () => {
     setSource(''); setAmount(''); setDate(null); setDateFieldKey(key => key + 1); setNote(''); setProof('');
@@ -23,7 +27,14 @@ export default function CatatPengeluaran() {
 
   return <FinancePage title="Catat Pengeluaran">
     <Field label="Jenis Pengeluaran" placeholder="Input Jenis Pengeluaran" value={source} onChangeText={setSource} />
-    <Field label="Nominal" placeholder="Input Nominal Pengeluaran" keyboardType="numeric" value={amount} onChangeText={(value: string) => setAmount(formatNominalInput(value))} />
+    <Field
+      label="Nominal"
+      placeholder="Input Nominal Pengeluaran"
+      keyboardType="numeric"
+      value={amount}
+      onChangeText={(value: string) => setAmount(formatNominalInput(value))}
+      error={nominalError}
+    />
     <DatePickerField key={dateFieldKey} label="Tanggal Pengeluaran Dana" value={date} onChange={setDate} />
     <Field label="Keterangan" placeholder="Masukan Keterangan .........." multiline value={note} onChangeText={setNote} />
     <EvidencePicker value={proof} onChange={setProof} />
@@ -32,7 +43,7 @@ export default function CatatPengeluaran() {
       <Action label="Simpan" disabled={!canSave} onPress={() => {
         const value = Number(amount.replace(/\D/g, ''));
         if (!Number.isFinite(value) || value <= 0) {
-          Alert.alert('Peringatan', 'Jumlah pengeluaran harus valid.');
+          Alert.alert('Peringatan', 'jumllah nominal harus valid jangan korup min');
           return;
         }
         if (!source.trim() || !date || !note.trim() || !proof) {
