@@ -18,6 +18,7 @@ export const navy = '#173575';
 export const blue = '#5d719f';
 export const muted = '#7586ad';
 export const pale = '#eef1f7';
+
 export const money = (value: number) => `Rp ${value.toLocaleString('id-ID')}`;
 export const formatNominalInput = (value: string) =>
   value.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -40,6 +41,7 @@ export function FinancePage({
   headerAction,
 }: FinancePageProps) {
   const pathname = usePathname();
+
   const { colorScheme } = useAppTheme();
   const isDarkMode = colorScheme === 'dark';
   const inferredRole = role ?? (pathname.startsWith('/user') ? 'user' : 'admin');
@@ -56,9 +58,11 @@ export function FinancePage({
           contentContainerStyle={s.contentWithHeader}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={s.heading}>
-            <Text style={[s.title, isDarkMode && s.titleDark]}>{title}</Text>
-          </View>
+          {title !== 'Dashboard' ? (
+            <View style={s.heading}>
+              <Text style={[s.title, isDarkMode && s.titleDark]}>{title}</Text>
+            </View>
+          ) : null}
           {headerAction ? (
             <View style={{ alignItems: 'flex-end', marginBottom: 8 }}>
               {headerAction}

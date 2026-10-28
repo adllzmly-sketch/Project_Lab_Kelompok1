@@ -31,15 +31,17 @@ const userMenuItems = [
   { title: 'Profil', icon: 'person-outline', key: 'profile', path: '/user/profil' },
 ] as const;
 
-export default function Header({ role, hideLogout = false }: HeaderProps) {
+export default function Header({ role }: HeaderProps) {
   const pathname = usePathname();
   const inferredRole: HeaderRole = role ?? (pathname.startsWith('/user') ? 'user' : 'admin');
-  const menuItems = inferredRole === 'admin' ? adminMenuItems : userMenuItems;
   const activeMenu = getActiveMenu(pathname, inferredRole);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [slideAnim] = useState(() => new Animated.Value(-SIDEBAR_WIDTH));
+
   const [iconRotateAnim] = useState(() => new Animated.Value(0));
+
+  const currentMenuItems = inferredRole === 'user' ? userMenuItems : adminMenuItems;
 
   useEffect(() => {
     Animated.parallel([
@@ -66,6 +68,7 @@ export default function Header({ role, hideLogout = false }: HeaderProps) {
     closeMenu();
     router.push(path as never);
   };
+
 
   return (
     <>
@@ -114,7 +117,7 @@ export default function Header({ role, hideLogout = false }: HeaderProps) {
         ]}
       >
         <View style={styles.menuContainer}>
-          {menuItems.map((item) => {
+          {currentMenuItems.map((item) => {
             const isActive = activeMenu === item.title;
             return (
               <Pressable
@@ -152,12 +155,14 @@ function getActiveMenu(pathname: string, role: HeaderRole) {
 
   if (pathname === '/admin' || pathname.startsWith('/admin/dashboard')) return 'Dashboard';
   if (pathname.startsWith('/admin/tambah_pemasukan')) return 'Pemasukan';
+
   if (pathname.startsWith('/admin/read_pengeluaran')) return 'Pengeluaran';
   if (
     pathname.startsWith('/admin/daftar_transaksi') ||
     pathname.startsWith('/admin/detail_transaksi')
   ) return 'Kelola Transaksi';
   if (pathname.startsWith('/admin/laporan_keuangan')) return 'Laporan Keuangan';
+
   if (pathname.startsWith('/admin/deteksi-anomali')) return 'Deteksi Anomali';
   if (pathname.startsWith('/admin/profil')) return 'Profil';
   return '';

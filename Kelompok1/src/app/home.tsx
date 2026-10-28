@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable, StatusBar, Animated, Dimensions } from 'react-native';
-import { router } from 'expo-router';
+import { useState } from 'react';
+import { View, Text, ScrollView, StyleSheet, Pressable, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+//import Header from '@/components/Header';
 
 /* =====================================================
    WARNA
@@ -12,55 +12,6 @@ const NAVY = '#193779';
 const MUTED = '#8B9ABE';
 const GREEN = '#39F15B';
 const RED = '#FF3030';
-
-/* =====================================================
-   UKURAN DRAWER
-===================================================== */
-
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const SIDEBAR_WIDTH = Math.min(SCREEN_WIDTH * 0.5, 250);
-
-/* =====================================================
-   MENU DRAWER
-===================================================== */
-
-const menuItems = [
-  {
-    title: 'Dashboard',
-    icon: 'grid-outline',
-    key: 'dashboard',
-  },
-  {
-    title: 'Pemasukan',
-    icon: 'trending-up-outline',
-    key: 'pemasukan',
-  },
-  {
-    title: 'Pengeluaran',
-    icon: 'trending-down-outline',
-    key: 'pengeluaran',
-  },
-  {
-    title: 'Kelola Transaksi',
-    icon: 'receipt-outline',
-    key: 'transaksi',
-  },
-  {
-    title: 'Laporan Keuangan',
-    icon: 'document-text-outline',
-    key: 'laporan',
-  },
-  {
-    title: 'Deteksi Anomali',
-    icon: 'alert-circle-outline',
-    key: 'anomali',
-  },
-  {
-    title: 'Profile',
-    icon: 'person-outline',
-    key: 'profile',
-  },
-] as const;
 
 /* =====================================================
    DATA GRAFIK
@@ -89,111 +40,12 @@ export default function HomeScreen() {
   ============================ */
 
   const [showBalance, setShowBalance] = useState(true);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [activeMenu, setActiveMenu] = useState('Dashboard');
-
-  /* ============================
-     ANIMASI DRAWER
-  ============================ */
-
-  const slideAnim = useRef(new Animated.Value(-SIDEBAR_WIDTH)).current;
-
-  /* ============================
-     ANIMASI ICON MENU
-  ============================ */
-
-  const iconRotateAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.parallel([
-      /* Drawer keluar / masuk */
-
-      Animated.timing(slideAnim, {
-        toValue: menuOpen ? 0 : -SIDEBAR_WIDTH,
-        duration: menuOpen ? 250 : 200,
-        useNativeDriver: true,
-      }),
-
-      /* Icon menu berputar */
-
-      Animated.timing(iconRotateAnim, {
-        toValue: menuOpen ? 1 : 0,
-        duration: 220,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, [menuOpen, slideAnim, iconRotateAnim]);
-
-  /* ============================
-     ROTASI ICON
-  ============================ */
-
-  const iconRotation = iconRotateAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '90deg'],
-  });
-
-  /* ============================
-     BUKA / TUTUP DRAWER
-  ============================ */
-
-  const toggleMenu = () => {
-    setMenuOpen((previous) => !previous);
-  };
-
-  const closeMenu = () => {
-    setMenuOpen(false);
-  };
 
   /* =====================================================
-     BUTTON MENU DRAWER
-
-     Nanti navigation dari halaman teman-teman
-     bisa dimasukkan di fungsi masing-masing.
+     DETEKSI ANOMALI
   ===================================================== */
 
-  const handleDashboard = () => {
-    setActiveMenu('Dashboard');
-    closeMenu();
-
-    console.log('Dashboard diklik');
-
-    /*
-      NANTI NAVIGASI DASHBOARD DI SINI
-
-      Contoh:
-      router.push('/');
-    */
-  };
-
-  const handlePemasukan = () => {
-    setActiveMenu('Pemasukan');
-    closeMenu();
-    router.push('/admin/tambah_pemasukan');
-  };
-
-  const handlePengeluaran = () => {
-    setActiveMenu('Pengeluaran');
-    closeMenu();
-    router.push('/admin/read_pengeluaran');
-  };
-
-  const handleTransaksi = () => {
-    setActiveMenu('Kelola Transaksi');
-    closeMenu();
-    router.push('/admin/daftar_transaksi');
-  };
-
-  const handleLaporan = () => {
-    setActiveMenu('Laporan Keuangan');
-    closeMenu();
-    router.push('/admin/laporan_keuangan');
-  };
-
   const handleAnomali = () => {
-    setActiveMenu('Deteksi Anomali');
-    closeMenu();
-
     console.log('Deteksi Anomali diklik');
 
     /*
@@ -204,59 +56,6 @@ export default function HomeScreen() {
     */
   };
 
-  const handleProfile = () => {
-    setActiveMenu('Profile');
-    closeMenu();
-
-    console.log('Profile diklik');
-
-    /*
-      NANTI NAVIGASI HALAMAN PROFILE DI SINI
-
-      Contoh:
-      router.push('/profile');
-    */
-  };
-
-  /* =====================================================
-     MENENTUKAN BUTTON YANG DIKLIK
-  ===================================================== */
-
-  const handleMenuPress = (key: string) => {
-    switch (key) {
-      case 'dashboard':
-        handleDashboard();
-        break;
-
-      case 'pemasukan':
-        handlePemasukan();
-        break;
-
-      case 'pengeluaran':
-        handlePengeluaran();
-        break;
-
-      case 'transaksi':
-        handleTransaksi();
-        break;
-
-      case 'laporan':
-        handleLaporan();
-        break;
-
-      case 'anomali':
-        handleAnomali();
-        break;
-
-      case 'profile':
-        handleProfile();
-        break;
-
-      default:
-        break;
-    }
-  };
-
   /* =====================================================
      TAMPILAN
   ===================================================== */
@@ -264,6 +63,12 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       <StatusBar barStyle="light-content" backgroundColor={NAVY} />
+
+      {/* =================================================
+          HEADER USER
+      ================================================= */}
+
+      {/* <Header role="user" /> */}
 
       {/* =================================================
           KONTEN DASHBOARD
@@ -432,92 +237,6 @@ export default function HomeScreen() {
 
         <Text style={styles.footer}>KASINO · Kas Informasi Organisasi</Text>
       </ScrollView>
-
-      {/* =================================================
-          DRAWER / SIDEBAR
-
-          SETIAP MENU SUDAH MENJADI BUTTON
-      ================================================= */}
-
-      <Animated.View
-        style={[
-          styles.sidebar,
-          {
-            transform: [
-              {
-                translateX: slideAnim,
-              },
-            ],
-          },
-        ]}
-      >
-        {menuItems.map((item) => {
-          const isActive = activeMenu === item.title;
-
-          return (
-            <Pressable
-              key={item.key}
-              style={({ pressed }) => [styles.menuItem, isActive && styles.activeMenuItem, pressed && styles.pressedMenuItem]}
-              onPress={() => handleMenuPress(item.key)}
-              accessibilityRole="button"
-              accessibilityLabel={`Buka menu ${item.title}`}
-            >
-              {/* ICON MENU */}
-
-              <Ionicons name={item.icon} size={20} color="#FFFFFF" />
-
-              {/* NAMA MENU */}
-
-              <Text style={[styles.menuText, isActive && styles.activeMenuText]}>{item.title}</Text>
-            </Pressable>
-          );
-        })}
-      </Animated.View>
-
-      {/* =================================================
-          HEADER
-
-          HEADER BERADA DI ATAS DRAWER
-      ================================================= */}
-
-      <View style={styles.header}>
-        {/* =========================
-            BUTTON DRAWER
-
-            HANYA ADA SATU ICON.
-            ICON BERPUTAR KETIKA
-            DRAWER DIBUKA.
-        ========================= */}
-
-        <Pressable style={styles.menuButton} onPress={toggleMenu} accessibilityRole="button" accessibilityLabel={menuOpen ? 'Tutup menu' : 'Buka menu'} hitSlop={15}>
-          <Animated.View
-            style={[
-              styles.customIconContainer,
-              {
-                transform: [
-                  {
-                    rotate: iconRotation,
-                  },
-                ],
-              },
-            ]}
-          >
-            <View style={styles.iconBarLong} />
-            <View style={styles.iconBarMedium} />
-            <View style={styles.iconBarShort} />
-          </Animated.View>
-        </Pressable>
-
-        {/* =========================
-            LOGO KASINO
-        ========================= */}
-
-        <View style={styles.brand}>
-          <Ionicons name="wallet-outline" size={29} color="#FFFFFF" />
-
-          <Text style={styles.brandText}>KASINO</Text>
-        </View>
-      </View>
     </SafeAreaView>
   );
 }
@@ -534,106 +253,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-  },
-
-  /* =================================================
-     HEADER
-  ================================================= */
-
-  header: {
-    position: 'absolute',
-
-    top: 0,
-    left: 0,
-    right: 0,
-
-    height: 62,
-
-    backgroundColor: NAVY,
-
-    paddingHorizontal: 22,
-
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-
-    zIndex: 999,
-    elevation: 999,
-  },
-
-  /* =================================================
-     BUTTON DRAWER
-  ================================================= */
-
-  menuButton: {
-    width: 40,
-    height: 40,
-
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-  },
-
-  /* =================================================
-     ICON FILTER / DRAWER CUSTOM
-  ================================================= */
-
-  customIconContainer: {
-    flexDirection: 'row',
-
-    alignItems: 'center',
-    justifyContent: 'center',
-
-    gap: 4,
-
-    width: 28,
-    height: 28,
-  },
-
-  iconBarLong: {
-    width: 3.5,
-    height: 22,
-
-    backgroundColor: '#FFFFFF',
-
-    borderRadius: 2,
-  },
-
-  iconBarMedium: {
-    width: 3.5,
-    height: 15,
-
-    backgroundColor: '#FFFFFF',
-
-    borderRadius: 2,
-  },
-
-  iconBarShort: {
-    width: 3.5,
-    height: 9,
-
-    backgroundColor: '#FFFFFF',
-
-    borderRadius: 2,
-  },
-
-  /* =================================================
-     BRAND KASINO
-  ================================================= */
-
-  brand: {
-    flexDirection: 'row',
-    alignItems: 'center',
-
-    gap: 9,
-  },
-
-  brandText: {
-    color: '#FFFFFF',
-
-    fontSize: 19,
-    fontWeight: '800',
-
-    letterSpacing: 0.5,
   },
 
   /* =================================================
@@ -981,82 +600,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
 
     marginTop: 24,
-  },
-
-  /* =================================================
-     SIDEBAR / DRAWER
-  ================================================= */
-
-  sidebar: {
-    position: 'absolute',
-
-    /*
-      Drawer dimulai dari bawah header.
-    */
-
-    top: 62,
-    left: 0,
-    bottom: 0,
-
-    width: SIDEBAR_WIDTH,
-
-    backgroundColor: NAVY,
-
-    paddingTop: 15,
-    paddingBottom: 20,
-
-    /*
-      Di atas dashboard tetapi
-      di bawah header.
-    */
-
-    zIndex: 100,
-    elevation: 100,
-  },
-
-  /* =================================================
-     BUTTON MENU DRAWER
-  ================================================= */
-
-  menuItem: {
-    minHeight: 46,
-
-    flexDirection: 'row',
-
-    alignItems: 'center',
-
-    paddingHorizontal: 18,
-
-    gap: 12,
-  },
-
-  /*
-    Menu yang sedang aktif.
-  */
-
-  activeMenuItem: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-  },
-
-  /*
-    Efek ketika button ditekan.
-  */
-
-  pressedMenuItem: {
-    backgroundColor: 'rgba(255, 255, 255, 0.10)',
-  },
-
-  menuText: {
-    color: '#D5DDF0',
-
-    fontSize: 12,
-
-    fontWeight: '600',
-
-    flexShrink: 1,
-  },
-
-  activeMenuText: {
-    color: '#FFFFFF',
   },
 });

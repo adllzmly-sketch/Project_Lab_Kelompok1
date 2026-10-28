@@ -210,11 +210,7 @@ export default function HomeScreen() {
         ================================================= */}
 
         <Pressable
-          style={({ pressed }) => [
-            styles.anomalyCard,
-            isDarkMode && styles.darkCard,
-            pressed && styles.anomalyPressed,
-          ]}
+          style={({ pressed }) => [styles.anomalyCard, isDarkMode && styles.darkCard, pressed && styles.anomalyPressed]}
           onPress={() => router.push('/admin/deteksi-anomali')}
           accessibilityRole="button"
           accessibilityLabel="Buka deteksi anomali"

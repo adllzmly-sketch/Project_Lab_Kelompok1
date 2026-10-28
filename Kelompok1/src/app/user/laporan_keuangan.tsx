@@ -41,10 +41,7 @@ export default function LaporanKeuangan() {
 
           <View>
             <Text style={styles.reportLabel}>{item.label}</Text>
-
-            <Text style={styles.reportValue}>
-              {money(item.value)}
-            </Text>
+            <Text style={styles.reportValue}>{money(item.value)}</Text>
           </View>
         </View>
       ))}
