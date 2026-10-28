@@ -50,8 +50,7 @@ export default function DetailTransaksi() {
 
       {detail('Keterangan', item.note || '-')}
 
-      {/* BUKTI TRANSAKSI */}
-
+      
       <View style={featureStyles.detailField}>
         <Text style={featureStyles.detailLabel}>Bukti</Text>
 
@@ -65,8 +64,6 @@ export default function DetailTransaksi() {
           <Text style={featureStyles.evidenceEmpty}>{item.proof || 'Tidak ada bukti terlampir'}</Text>
         )}
       </View>
-
-      {/* TOMBOL KEMBALI */}
 
       <Pressable
         onPress={() => router.back()}
