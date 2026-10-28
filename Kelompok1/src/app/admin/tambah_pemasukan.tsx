@@ -6,6 +6,7 @@ import { EvidencePicker } from '../../components/evidence-picker';
 import { DatePickerField, formatDate } from '../../components/date-picker-field';
 import { useFinance } from '../../context/finance-context';
 import { featureStyles } from '../../../assets/styles/finance-features';
+import Header from '../../components/Header';
 
 const MAX_INCOME_LIMIT = 1_000_000_000;
 

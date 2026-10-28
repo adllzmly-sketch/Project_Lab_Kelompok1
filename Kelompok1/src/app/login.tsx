@@ -81,7 +81,7 @@ export default function LoginScreen() {
         >
           <View style={styles.logo}>
             <Ionicons name="wallet" size={92} color={NAVY} />
-            <Text style={styles.logoText}>KASINO</Text>
+            <Text style={styles.logoText}>KasOrmawa</Text>
           </View>
 
           <View style={styles.form}>
