@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   View,
@@ -15,19 +14,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
-<<<<<<< HEAD
 const NAVY = '#142F70';
 const BLUE = 'rgba(20, 47, 112, 0.7)';
-const GREEN = '#00FF40';
 const RED = '#F70005';
-=======
-const NAVY = '#193779';
-const RED = '#dc2626';
+
 const accounts = {
   '24880100A': { password: 'admin', route: '/admin' },
   '24880100U': { password: 'user', route: '/user/dashboard' },
 } as const;
->>>>>>> 934c258 (update)
 
 export default function LoginScreen() {
   const [nim, setNim] = useState('');
@@ -37,33 +31,7 @@ export default function LoginScreen() {
   const [nimError, setNimError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const validateNim = (value: string) => {
-    if (!value.trim()) return 'NIM wajib diisi';
-    if (!/^\d+$/.test(value.trim())) return 'NIM harus berupa angka';
-    return '';
-  };
-
-  const validatePassword = (value: string) => {
-    if (!value) return 'Kata sandi wajib diisi';
-    if (value.length < 8) {
-      return 'Kata sandi minimal 8 karakter';
-    }
-    return '';
-  };
-
   const handleLogin = () => {
-<<<<<<< HEAD
-    const nimValidation = validateNim(nim);
-    const passwordValidation = validatePassword(password);
-
-    setNimError(nimValidation);
-    setPasswordError(passwordValidation);
-
-    if (nimValidation || passwordValidation) return;
-
-    // Belum terhubung ke autentikasi backend.
-    router.replace('/');
-=======
     const normalizedNim = nim.trim().toUpperCase();
     setNimError('');
     setPasswordError('');
@@ -95,8 +63,7 @@ export default function LoginScreen() {
       return;
     }
 
-    router.replace(account.route);
->>>>>>> 934c258 (update)
+    router.replace(account.route as any);
   };
 
   return (
@@ -126,21 +93,21 @@ export default function LoginScreen() {
                 style={[
                   styles.input,
                   focused === 'nim' && styles.focused,
-<<<<<<< HEAD
-                  nimError !== '' && styles.errorBorder,
+                  !!nimError && styles.errorBorder,
                 ]}
                 placeholder="Masukkan NIM"
                 placeholderTextColor="#D6DFF5"
                 value={nim}
                 onChangeText={(value) => {
-                  setNim(value);
-                  setNimError(validateNim(value));
+                  setNim(value.toUpperCase());
+                  setNimError('');
                 }}
                 onFocus={() => setFocused('nim')}
                 onBlur={() => setFocused('')}
-                keyboardType="number-pad"
-                autoCapitalize="none"
+                keyboardType="default"
+                autoCapitalize="characters"
                 autoCorrect={false}
+                autoComplete="off"
               />
 
               {!!nimError && (
@@ -149,22 +116,6 @@ export default function LoginScreen() {
                   {nimError}
                 </Text>
               )}
-=======
-                  !!nimError && styles.errorBorder,
-                ]}
-                placeholder="Masukkan NIM"
-                placeholderTextColor="#8B9ABE"
-                value={nim}
-                onChangeText={(value) => { setNim(value.toUpperCase()); setNimError(''); }}
-                onFocus={() => setFocused('nim')}
-                onBlur={() => setFocused('')}
-                keyboardType="default"
-                autoCapitalize="characters"
-                autoCorrect={false}
-                autoComplete="off"
-              />
-              {!!nimError && <Text style={styles.errorText}>{nimError}</Text>}
->>>>>>> 934c258 (update)
             </View>
 
             {/* Input Kata Sandi */}
@@ -183,14 +134,10 @@ export default function LoginScreen() {
                   placeholder="Masukkan Kata Sandi"
                   placeholderTextColor="#D6DFF5"
                   value={password}
-<<<<<<< HEAD
                   onChangeText={(value) => {
                     setPassword(value);
-                    setPasswordError(validatePassword(value));
+                    setPasswordError('');
                   }}
-=======
-                  onChangeText={(value) => { setPassword(value); setPasswordError(''); }}
->>>>>>> 934c258 (update)
                   onFocus={() => setFocused('password')}
                   onBlur={() => setFocused('')}
                   secureTextEntry={!showPassword}
@@ -217,7 +164,6 @@ export default function LoginScreen() {
                   />
                 </Pressable>
               </View>
-<<<<<<< HEAD
 
               {!!passwordError && (
                 <Text style={styles.errorText}>
@@ -225,9 +171,6 @@ export default function LoginScreen() {
                   {passwordError}
                 </Text>
               )}
-=======
-              {!!passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
->>>>>>> 934c258 (update)
             </View>
 
             {/* Tombol Masuk */}
