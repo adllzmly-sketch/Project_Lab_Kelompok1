@@ -3,10 +3,13 @@ import { Alert, Modal, Platform, Pressable, StyleSheet, Text, TextInput, View } 
 import * as Print from 'expo-print';
 import { FinancePage, money } from './finance-ui';
 import { Transaction, useFinance } from '../context/finance-context';
+import { useAppTheme } from '../context/theme-context';
 import { featureStyles as s } from '../../assets/styles/finance-features';
 
 export function FinanceReport({ role }: { role: 'admin' | 'user' }) {
   const { transactions } = useFinance();
+  const { colorScheme } = useAppTheme();
+  const isDarkMode = colorScheme === 'dark';
   const [printing, setPrinting] = useState(false);
   const [month, setMonth] = useState(() => new Date().getMonth());
   const [year, setYear] = useState(() => new Date().getFullYear());
@@ -40,8 +43,8 @@ export function FinanceReport({ role }: { role: 'admin' | 'user' }) {
     }
   };
 
-  const downloadButton = <Pressable accessibilityRole="button" accessibilityLabel="Unduh laporan keuangan dalam PDF" disabled={printing} onPress={downloadPdf} style={[s.reportDownload, printing && s.reportDownloadDisabled]}>
-    <Text style={s.reportDownloadText}>{printing ? 'PDF...' : 'Unduh PDF'}</Text>
+  const downloadButton = <Pressable accessibilityRole="button" accessibilityLabel="Unduh laporan keuangan dalam PDF" disabled={printing} onPress={downloadPdf} style={[s.reportDownload, isDarkMode && s.reportDownloadDark, printing && s.reportDownloadDisabled]}>
+    <Text style={[s.reportDownloadText, isDarkMode && s.reportDownloadTextDark]}>{printing ? 'PDF...' : 'Unduh PDF'}</Text>
   </Pressable>;
 
   return <FinancePage title="Laporan Keuangan" role={role} headerAction={downloadButton}>
