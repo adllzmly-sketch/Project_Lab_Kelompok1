@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 import Header from '@/components/Header';
+import { useAppTheme } from '@/context/theme-context';
 
 /* =====================================================
    WARNA
@@ -42,13 +43,15 @@ export default function HomeScreen() {
   ============================ */
 
   const [showBalance, setShowBalance] = useState(true);
+  const { colorScheme } = useAppTheme();
+  const isDarkMode = colorScheme === 'dark';
 
   /* =====================================================
      TAMPILAN
   ===================================================== */
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <SafeAreaView style={[styles.safeArea, isDarkMode && styles.darkBackground]} edges={['top']}>
       <StatusBar barStyle="light-content" backgroundColor={NAVY} />
 
       {/* =================================================
@@ -61,7 +64,7 @@ export default function HomeScreen() {
           KONTEN DASHBOARD
       ================================================= */}
 
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView style={[styles.scroll, isDarkMode && styles.darkBackground]} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* =========================
             SAPAAN
         ========================= */}
@@ -72,7 +75,7 @@ export default function HomeScreen() {
           </View>
 
           <View style={styles.greetingInfo}>
-            <Text style={styles.hello}>Halo Rifa</Text>
+            <Text style={[styles.hello, isDarkMode && styles.darkText]}>Halo Rifa</Text>
 
             <Text style={styles.role}>Administrator</Text>
           </View>
@@ -117,14 +120,14 @@ export default function HomeScreen() {
 
           {/* PENGELUARAN */}
 
-          <View style={[styles.summaryCard, styles.expenseCard]}>
+          <View style={[styles.summaryCard, styles.expenseCard, isDarkMode && styles.darkCard]}>
             <View style={styles.summaryTitleRow}>
-              <Text style={styles.expenseTitle}>Pengeluaran</Text>
+              <Text style={[styles.expenseTitle, isDarkMode && styles.darkText]}>Pengeluaran</Text>
 
               <Ionicons name="trending-down-outline" size={22} color={RED} />
             </View>
 
-            <Text style={styles.expenseAmount}>Rp.200.000</Text>
+            <Text style={[styles.expenseAmount, isDarkMode && styles.darkText]}>Rp.200.000</Text>
           </View>
         </View>
 
@@ -133,7 +136,7 @@ export default function HomeScreen() {
         ================================================= */}
 
         <View style={styles.chartSection}>
-          <Text style={styles.sectionTitle}>Grafik Pemasukan & Pengeluaran</Text>
+          <Text style={[styles.sectionTitle, isDarkMode && styles.darkText]}>Grafik Pemasukan & Pengeluaran</Text>
 
           {/* LEGEND */}
 
@@ -196,7 +199,7 @@ export default function HomeScreen() {
                   />
                 </View>
 
-                <Text style={styles.monthLabel}>{item.month}</Text>
+                <Text style={[styles.monthLabel, isDarkMode && styles.darkText]}>{item.month}</Text>
               </View>
             ))}
           </View>
@@ -209,6 +212,7 @@ export default function HomeScreen() {
         <Pressable
           style={({ pressed }) => [
             styles.anomalyCard,
+            isDarkMode && styles.darkCard,
             pressed && styles.anomalyPressed,
           ]}
           onPress={() => router.push('/admin/deteksi-anomali')}
@@ -218,7 +222,7 @@ export default function HomeScreen() {
           <Ionicons name="alert-circle-outline" size={25} color={NAVY} />
 
           <View style={styles.anomalyInfo}>
-            <Text style={styles.anomalyTitle}>Anomali Terdeteksi</Text>
+            <Text style={[styles.anomalyTitle, isDarkMode && styles.darkText]}>Anomali Terdeteksi</Text>
 
             <Text style={styles.anomalySubtitle}>Periksa transaksi tidak wajar</Text>
           </View>
@@ -249,6 +253,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
+  darkBackground: { backgroundColor: '#111827' },
+  darkCard: { backgroundColor: '#202b3e' },
+  darkText: { color: '#f8fafc' },
 
   /* =================================================
      SCROLL

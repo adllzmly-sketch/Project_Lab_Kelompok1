@@ -15,10 +15,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
+<<<<<<< HEAD
 const NAVY = '#142F70';
 const BLUE = 'rgba(20, 47, 112, 0.7)';
 const GREEN = '#00FF40';
 const RED = '#F70005';
+=======
+const NAVY = '#193779';
+const RED = '#dc2626';
+const accounts = {
+  '24880100A': { password: 'admin', route: '/admin' },
+  '24880100U': { password: 'user', route: '/user/dashboard' },
+} as const;
+>>>>>>> 934c258 (update)
 
 export default function LoginScreen() {
   const [nim, setNim] = useState('');
@@ -43,6 +52,7 @@ export default function LoginScreen() {
   };
 
   const handleLogin = () => {
+<<<<<<< HEAD
     const nimValidation = validateNim(nim);
     const passwordValidation = validatePassword(password);
 
@@ -53,6 +63,40 @@ export default function LoginScreen() {
 
     // Belum terhubung ke autentikasi backend.
     router.replace('/');
+=======
+    const normalizedNim = nim.trim().toUpperCase();
+    setNimError('');
+    setPasswordError('');
+
+    let isValid = true;
+    if (!normalizedNim) {
+      setNimError('NIM wajib diisi.');
+      isValid = false;
+    } else if (!/^\d{8}[AU]$/.test(normalizedNim)) {
+      setNimError('Format NIM tidak valid.');
+      isValid = false;
+    }
+
+    if (!password) {
+      setPasswordError('Kata sandi wajib diisi.');
+      isValid = false;
+    }
+
+    if (!isValid) return;
+
+    const account = accounts[normalizedNim as keyof typeof accounts];
+    if (!account) {
+      setNimError('NIM atau kata sandi tidak sesuai.');
+      return;
+    }
+
+    if (password !== account.password) {
+      setPasswordError('NIM atau kata sandi tidak sesuai.');
+      return;
+    }
+
+    router.replace(account.route);
+>>>>>>> 934c258 (update)
   };
 
   return (
@@ -82,6 +126,7 @@ export default function LoginScreen() {
                 style={[
                   styles.input,
                   focused === 'nim' && styles.focused,
+<<<<<<< HEAD
                   nimError !== '' && styles.errorBorder,
                 ]}
                 placeholder="Masukkan NIM"
@@ -104,6 +149,22 @@ export default function LoginScreen() {
                   {nimError}
                 </Text>
               )}
+=======
+                  !!nimError && styles.errorBorder,
+                ]}
+                placeholder="Masukkan NIM"
+                placeholderTextColor="#8B9ABE"
+                value={nim}
+                onChangeText={(value) => { setNim(value.toUpperCase()); setNimError(''); }}
+                onFocus={() => setFocused('nim')}
+                onBlur={() => setFocused('')}
+                keyboardType="default"
+                autoCapitalize="characters"
+                autoCorrect={false}
+                autoComplete="off"
+              />
+              {!!nimError && <Text style={styles.errorText}>{nimError}</Text>}
+>>>>>>> 934c258 (update)
             </View>
 
             {/* Input Kata Sandi */}
@@ -114,7 +175,7 @@ export default function LoginScreen() {
                 style={[
                   styles.passwordBox,
                   focused === 'password' && styles.focused,
-                  passwordError !== '' && styles.errorBorder,
+                  !!passwordError && styles.errorBorder,
                 ]}
               >
                 <TextInput
@@ -122,10 +183,14 @@ export default function LoginScreen() {
                   placeholder="Masukkan Kata Sandi"
                   placeholderTextColor="#D6DFF5"
                   value={password}
+<<<<<<< HEAD
                   onChangeText={(value) => {
                     setPassword(value);
                     setPasswordError(validatePassword(value));
                   }}
+=======
+                  onChangeText={(value) => { setPassword(value); setPasswordError(''); }}
+>>>>>>> 934c258 (update)
                   onFocus={() => setFocused('password')}
                   onBlur={() => setFocused('')}
                   secureTextEntry={!showPassword}
@@ -152,6 +217,7 @@ export default function LoginScreen() {
                   />
                 </Pressable>
               </View>
+<<<<<<< HEAD
 
               {!!passwordError && (
                 <Text style={styles.errorText}>
@@ -159,6 +225,9 @@ export default function LoginScreen() {
                   {passwordError}
                 </Text>
               )}
+=======
+              {!!passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
+>>>>>>> 934c258 (update)
             </View>
 
             {/* Tombol Masuk */}
@@ -249,14 +318,8 @@ const styles = StyleSheet.create({
     borderColor: NAVY,
     borderWidth: 2.5,
   },
-  errorBorder: {
-    borderColor: RED,
-  },
-  errorText: {
-    color: RED,
-    fontSize: 12,
-    marginTop: 7,
-  },
+  errorBorder: { borderColor: RED },
+  errorText: { color: RED, fontSize: 12, marginTop: 7 },
   button: {
     minHeight: 68,
     backgroundColor: NAVY,

@@ -1,99 +1,59 @@
-import { useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import * as DocumentPicker from 'expo-document-picker';
+import { Alert, Image, Platform, Pressable, Text, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { featureStyles as s } from '../../assets/styles/finance-features';
 
-type EvidencePickerProps = {
-  value: string;
-  onChange: (uri: string) => void;
-};
+type StoredDocument = { kind: 'document'; uri: string; name: string; mimeType?: string };
+export type Evidence = { uri: string; name?: string; mimeType?: string; isDocument: boolean };
 
-export function EvidencePicker({ value, onChange }: EvidencePickerProps) {
-  const [fileName, setFileName] = useState('');
+export function readEvidence(value: string): Evidence | null {
+  if (!value) return null;
+  try {
+    const stored = JSON.parse(value) as StoredDocument;
+    if (stored.kind === 'document' && stored.uri) return { uri: stored.uri, name: stored.name, mimeType: stored.mimeType, isDocument: true };
+  } catch { /* Existing camera/gallery records store a plain URI. */ }
+  return { uri: value, isDocument: false };
+}
 
-  const takePhoto = async () => {
-    try {
-      const permission = await ImagePicker.requestCameraPermissionsAsync();
+export function EvidencePicker({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  const pickImage = async () => {
+    if (Platform.OS !== 'web') {
+      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permission.granted) {
-        Alert.alert('Izin kamera diperlukan', 'Izinkan akses kamera untuk mengambil foto bukti.');
+        Alert.alert('Izin foto diperlukan', 'Izinkan akses foto untuk memilih bukti dari galeri.');
         return;
       }
-
-      const result = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 0.8 });
-      const photo = result.assets?.[0];
-      if (!result.canceled && photo) {
-        onChange(photo.uri);
-        setFileName(photo.fileName || 'Foto kamera');
-      }
-    } catch {
-      Alert.alert('Kamera tidak dapat dibuka', 'Coba lagi atau pilih foto dari galeri.');
     }
+    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsEditing: true, quality: 0.8 });
+    if (!result.canceled && result.assets[0]) onChange(result.assets[0].uri);
   };
-
-  const pickPhoto = async () => {
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.8 });
-      const photo = result.assets?.[0];
-      if (!result.canceled && photo) {
-        onChange(photo.uri);
-        setFileName(photo.fileName || 'Foto dari galeri');
-      }
-    } catch {
-      Alert.alert('Galeri tidak dapat dibuka', 'Coba pilih bukti melalui menu file.');
+  const takePhoto = async () => {
+    if (Platform.OS === 'web') {
+      Alert.alert('Kamera tidak tersedia', 'Gunakan aplikasi Android untuk mengambil foto bukti.');
+      return;
     }
-  };
-
-  const pickFile = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({ type: '*/*', copyToCacheDirectory: true });
-      const file = result.assets?.[0];
-      if (!result.canceled && file) {
-        onChange(file.uri);
-        setFileName(file.name);
-      }
-    } catch {
-      Alert.alert('File tidak dapat dibuka', 'Coba pilih file bukti sekali lagi.');
+    const permission = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert('Izin kamera diperlukan', 'Izinkan akses kamera untuk mengambil foto bukti.');
+      return;
     }
+    const result = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], allowsEditing: true, quality: 0.8 });
+    if (!result.canceled && result.assets[0]) onChange(result.assets[0].uri);
   };
+  const evidence = readEvidence(value);
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Bukti</Text>
-      <View style={styles.actions}>
-        <EvidenceAction icon="camera-outline" label="Kamera" onPress={takePhoto} />
-        <EvidenceAction icon="images-outline" label="Foto" onPress={pickPhoto} />
-        <EvidenceAction icon="document-attach-outline" label="File" onPress={pickFile} />
-      </View>
-      {!!value && (
-        <View style={styles.selected}>
-          <Ionicons name="checkmark-circle" size={16} color="#193779" />
-          <Text style={styles.fileName} numberOfLines={1}>{fileName || value.split('/').pop() || 'Bukti terpilih'}</Text>
-          <Pressable accessibilityRole="button" accessibilityLabel="Hapus bukti" onPress={() => { onChange(''); setFileName(''); }}>
-            <Ionicons name="close-circle-outline" size={18} color="#7586ad" />
-          </Pressable>
-        </View>
-      )}
+  return <View style={s.evidenceContainer}>
+    <Text style={s.evidenceLabel}>Bukti Foto (wajib)</Text>
+    <View style={s.evidenceButtons}>
+      <EvidenceButton label="Ambil Foto" onPress={takePhoto} />
+      <EvidenceButton label="Pilih Foto" onPress={pickImage} />
     </View>
-  );
+    {evidence ? <View style={s.evidencePreviewRow}>
+      <Image source={{ uri: evidence.uri }} resizeMode="cover" style={s.evidencePreviewImage} />
+      <View style={s.evidenceInfo}><Text numberOfLines={2} style={s.evidenceName}>Foto bukti siap disimpan</Text><Pressable onPress={() => onChange('')}><Text style={s.evidenceRemove}>Hapus bukti</Text></Pressable></View>
+    </View> : null}
+  </View>;
 }
 
-function EvidenceAction({ icon, label, onPress }: { icon: 'camera-outline' | 'images-outline' | 'document-attach-outline'; label: string; onPress: () => void }) {
-  return (
-    <Pressable accessibilityRole="button" onPress={onPress} style={({ pressed }) => [styles.action, pressed && styles.pressed]}>
-      <Ionicons name={icon} size={19} color="#193779" />
-      <Text style={styles.actionText}>{label}</Text>
-    </Pressable>
-  );
+function EvidenceButton({ label, onPress }: { label: string; onPress: () => void }) {
+  return <Pressable accessibilityRole="button" onPress={onPress} style={s.evidenceButton}><Text style={s.evidenceButtonText}>{label}</Text></Pressable>;
 }
-
-const styles = StyleSheet.create({
-  container: { marginBottom: 10 },
-  label: { color: '#173575', fontSize: 11, marginBottom: 4 },
-  actions: { flexDirection: 'row', gap: 8 },
-  action: { flex: 1, minHeight: 44, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 6, backgroundColor: '#eef1f7', borderWidth: 1, borderColor: '#cbd4e5', borderRadius: 5 },
-  pressed: { opacity: 0.7 },
-  actionText: { color: '#193779', fontSize: 12, fontWeight: '600' },
-  selected: { marginTop: 8, minHeight: 32, flexDirection: 'row', alignItems: 'center', gap: 7 },
-  fileName: { flex: 1, color: '#526487', fontSize: 11 },
-});

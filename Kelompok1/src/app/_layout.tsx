@@ -1,7 +1,7 @@
 
 import { DarkTheme, DefaultTheme, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from 'react-native';
+import { useAppTheme, ThemePreferenceProvider } from '@/context/theme-context';
 
 import { ThemeProvider } from 'expo-router';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
@@ -14,7 +14,11 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  return <ThemePreferenceProvider><ThemedRootLayout /></ThemePreferenceProvider>;
+}
+
+function ThemedRootLayout() {
+  const { colorScheme } = useAppTheme();
 
   return (
     <ThemeProvider

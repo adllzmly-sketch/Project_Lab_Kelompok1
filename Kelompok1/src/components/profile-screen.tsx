@@ -1,19 +1,21 @@
 import React, { ComponentProps, ReactNode, useState } from 'react';
-import { Pressable, StyleSheet, Text, View, Image, TextInput, Alert, useWindowDimensions, ScrollView, Modal } from 'react-native';
+import { Pressable, StyleSheet, Text, View, Image, TextInput, Alert, useWindowDimensions, ScrollView, Modal, Switch } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import * as ImagePicker from 'expo-image-picker';
 import { blue, FinancePage, navy } from './finance-ui';
+import { useAppTheme } from '../context/theme-context';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 type Section = 'akun' | 'tentang';
 
 const appVersion = Constants.expoConfig?.version ?? '1.0.0';
-
 export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
   const { width } = useWindowDimensions();
   const isLargeScreen = width >= 768;
+  const { colorScheme, setColorScheme } = useAppTheme();
+  const isDarkMode = colorScheme === 'dark';
 
   const admin = role === 'admin';
 
@@ -83,10 +85,19 @@ export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
     router.replace('/login');
   };
 
+  const toggleTheme = async (darkMode: boolean) => {
+    const nextTheme = darkMode ? 'dark' : 'light';
+    try {
+      await setColorScheme(nextTheme);
+    } catch {
+      Alert.alert('Tema tidak tersimpan', 'Pilihan tema berlaku sampai aplikasi ditutup.');
+    }
+  };
+
   return (
     <FinancePage title="Profile" role={role} hideLogout>
       <ScrollView 
-        contentContainerStyle={[s.container, isLargeScreen && s.containerLarge]} 
+        contentContainerStyle={[s.container, { backgroundColor: isDarkMode ? '#111827' : '#ffffff' }, isLargeScreen && s.containerLarge]} 
         showsVerticalScrollIndicator={false}
         bounces={false}
       >
@@ -108,7 +119,7 @@ export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
             </View>
           </Pressable>
 
-          <Text style={s.name}>{nama}</Text>
+          <Text style={[s.name, isDarkMode && { color: '#f8fafc' }]}>{nama}</Text>
         </View>
 
        
@@ -118,6 +129,7 @@ export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
             label="Informasi Akun" 
             expanded={open === 'akun'} 
             onPress={() => toggle('akun')}
+            dark={isDarkMode}
           >
             {isEditing ? (
               <View style={{ gap: 10, paddingVertical: 4 }}>
@@ -150,11 +162,11 @@ export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
               </View>
             ) : (
               <View>
-                <InfoRow label="Nama" value={nama} />
-                <InfoRow label="Username" value={username} />
-                <InfoRow label="Email" value={email} />
-                <InfoRow label="Role" value={roleName} />
-                <InfoRow label="Status" value="Aktif" last />
+                <InfoRow label="Nama" value={nama} dark={isDarkMode} />
+                <InfoRow label="Username" value={username} dark={isDarkMode} />
+                <InfoRow label="Email" value={email} dark={isDarkMode} />
+                <InfoRow label="Role" value={roleName} dark={isDarkMode} />
+                <InfoRow label="Status" value="Aktif" last dark={isDarkMode} />
                 
                 <Pressable onPress={handleOpenEdit} style={s.btnEdit}>
                   <Ionicons name="create-outline" size={14} color={blue} />
@@ -169,14 +181,29 @@ export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
             label="Tentang Aplikasi" 
             expanded={open === 'tentang'} 
             onPress={() => toggle('tentang')}
+            dark={isDarkMode}
           >
-            <InfoRow label="Nama Aplikasi" value="KASINO" />
-            <InfoRow label="Kepanjangan" value="Kas Informasi Organisasi" />
-            <InfoRow label="Versi" value={appVersion} />
-            <Text style={s.aboutText}>
+            <InfoRow label="Nama Aplikasi" value="KASINO" dark={isDarkMode} />
+            <InfoRow label="Kepanjangan" value="Kas Informasi Organisasi" dark={isDarkMode} />
+            <InfoRow label="Versi" value={appVersion} dark={isDarkMode} />
+            <Text style={[s.aboutText, isDarkMode && { color: '#c1ccdd' }]}>
               Aplikasi pencatatan dan pemantauan kas organisasi. Kamu dapat melihat ringkasan, riwayat transaksi, dan laporan keuangan organisasi dengan mudah dan transparan.
             </Text>
           </MenuCard>
+
+          <View style={[s.themeRow, { backgroundColor: isDarkMode ? '#202b3e' : '#f8fafc', borderColor: isDarkMode ? '#38465e' : '#e2e8f0' }]}>
+            <View style={s.themeInfo}>
+              <Text style={[s.themeTitle, { color: isDarkMode ? '#fff' : navy }]}>Mode {isDarkMode ? 'Gelap' : 'Terang'}</Text>
+              <Text style={[s.themeSubtitle, { color: isDarkMode ? '#c1ccdd' : '#64748b' }]}>Ubah tampilan aplikasi</Text>
+            </View>
+            <Switch
+              accessibilityLabel="Aktifkan mode gelap"
+              value={isDarkMode}
+              onValueChange={toggleTheme}
+              trackColor={{ false: '#cbd5e1', true: blue }}
+              thumbColor={isDarkMode ? '#fff' : '#f8fafc'}
+            />
+          </View>
 
          
           <Pressable 
@@ -221,7 +248,7 @@ export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
   );
 }
 
-function MenuCard({ icon, label, expanded, onPress, children }: { icon: IconName; label: string; expanded: boolean; onPress: () => void; children: ReactNode }) {
+function MenuCard({ icon, label, expanded, onPress, children, dark = false }: { icon: IconName; label: string; expanded: boolean; onPress: () => void; children: ReactNode; dark?: boolean }) {
   return (
     <View style={s.menuWrap}>
       <Pressable 
@@ -237,16 +264,16 @@ function MenuCard({ icon, label, expanded, onPress, children }: { icon: IconName
         <Text style={s.menuLabel}>{label}</Text>
         <Ionicons name={expanded ? 'chevron-down' : 'chevron-forward'} size={18} color="#fff" />
       </Pressable>
-      {expanded && <View style={s.panel}>{children}</View>}
+      {expanded && <View style={[s.panel, dark && s.panelDark]}>{children}</View>}
     </View>
   );
 }
 
-function InfoRow({ label, value, last }: { label: string; value: string; last?: boolean }) {
+function InfoRow({ label, value, last, dark = false }: { label: string; value: string; last?: boolean; dark?: boolean }) {
   return (
-    <View style={[s.infoRow, !last && s.infoDivider]}>
-      <Text style={s.infoLabel}>{label}</Text>
-      <Text style={s.infoValue}>{value}</Text>
+    <View style={[s.infoRow, !last && s.infoDivider, dark && s.infoDividerDark]}>
+      <Text style={[s.infoLabel, dark && s.infoLabelDark]}>{label}</Text>
+      <Text style={[s.infoValue, dark && s.infoValueDark]}>{value}</Text>
     </View>
   );
 }
@@ -268,12 +295,19 @@ const s = StyleSheet.create({
   menuIcon: { width: 32, height: 32, borderRadius: 8, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
   menuLabel: { flex: 1, color: '#fff', fontSize: 14, fontWeight: '600' },
 
-  panel: { marginTop: 6, borderRadius: 12, backgroundColor: '#f8fafc', borderWidth: 1, borderColor: '#e2e8f0', paddingHorizontal: 14, paddingVertical: 12 },
+  panel: { marginTop: 6, borderRadius: 12, backgroundColor: '#f8fafc', borderWidth: 1, borderColor: '#e2e8f0', paddingHorizontal: 14, paddingVertical: 12 }, panelDark: { backgroundColor: '#202b3e', borderColor: '#38465e' },
   infoRow: { paddingVertical: 6 },
   infoDivider: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#e2e8f0' },
+  infoDividerDark: { borderBottomColor: '#38465e' },
   infoLabel: { color: '#64748b', fontSize: 10, marginBottom: 2 },
   infoValue: { color: navy, fontSize: 13, fontWeight: '600' },
+  infoLabelDark: { color: '#b8c4d8' },
+  infoValueDark: { color: '#f8fafc' },
   aboutText: { color: '#334155', fontSize: 11, lineHeight: 18, paddingVertical: 6 },
+  themeRow: { minHeight: 64, borderWidth: 1, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, marginBottom: 12, flexDirection: 'row', alignItems: 'center' },
+  themeInfo: { flex: 1, gap: 4 },
+  themeTitle: { fontSize: 13, fontWeight: '700' },
+  themeSubtitle: { fontSize: 11 },
 
   inputLabel: { color: '#64748b', fontSize: 10, fontWeight: '600' },
   input: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#cbd5e1', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8, fontSize: 12, color: navy },

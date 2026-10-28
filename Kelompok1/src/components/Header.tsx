@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Animated, Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, usePathname } from 'expo-router';
 
 const NAVY = '#142F70';
 
@@ -48,7 +48,8 @@ const menuItems = [
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeMenu, setActiveMenu] = useState('Dashboard');
+  const pathname = usePathname();
+  const activeMenu = getActiveMenu(pathname);
 
   const [slideAnim] = useState(() => new Animated.Value(-SIDEBAR_WIDTH));
   const [iconRotateAnim] = useState(() => new Animated.Value(0));
@@ -83,42 +84,35 @@ export default function Header() {
   };
 
   const handleDashboard = () => {
-    setActiveMenu('Dashboard');
     closeMenu();
     router.push('/admin');
   };
   const handlePemasukan = () => {
-    setActiveMenu('Pemasukan');
     closeMenu();
     router.push('/admin/tambah_pemasukan');
   };
 
   const handlePengeluaran = () => {
-    setActiveMenu('Pengeluaran');
     closeMenu();
     router.push('/admin/read_pengeluaran');
   };
 
   const handleTransaksi = () => {
-    setActiveMenu('Kelola Transaksi');
     closeMenu();
     router.push('/admin/daftar_transaksi');
   };
 
   const handleLaporan = () => {
-    setActiveMenu('Laporan Keuangan');
     closeMenu();
     router.push('/admin/laporan_keuangan');
   };
 
   const handleAnomali = () => {
-    setActiveMenu('Deteksi Anomali');
     closeMenu();
     router.push('/admin/deteksi-anomali');
   };
 
   const handleProfile = () => {
-    setActiveMenu('Profile');
     closeMenu();
     router.push('/admin/profil');
   };
@@ -216,6 +210,17 @@ export default function Header() {
       </Animated.View>
     </>
   );
+}
+
+function getActiveMenu(pathname: string) {
+  if (pathname === '/admin' || pathname === '/admin/dashboard') return 'Dashboard';
+  if (pathname.startsWith('/admin/tambah_pemasukan')) return 'Pemasukan';
+  if (pathname.startsWith('/admin/read_pengeluaran')) return 'Pengeluaran';
+  if (pathname.startsWith('/admin/daftar_transaksi') || pathname.startsWith('/admin/detail_transaksi')) return 'Kelola Transaksi';
+  if (pathname.startsWith('/admin/laporan_keuangan')) return 'Laporan Keuangan';
+  if (pathname.startsWith('/admin/deteksi-anomali')) return 'Deteksi Anomali';
+  if (pathname.startsWith('/admin/profil')) return 'Profile';
+  return '';
 }
 
 const styles = StyleSheet.create({
