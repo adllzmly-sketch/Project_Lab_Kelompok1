@@ -7,18 +7,14 @@ import { Ionicons } from '@expo/vector-icons';
 import Header from '@/components/Header';
 import { useAppTheme } from '@/context/theme-context';
 
-/* =====================================================
-   WARNA
-===================================================== */
+// WARNA 
 
 const NAVY = '#142F70';
 const MUTED = 'rgba(20, 47, 112, 0.7)';
 const GREEN = '#00FF40';
 const RED = '#F70005';
 
-/* =====================================================
-   DATA GRAFIK
-===================================================== */
+// Grafik
 
 const chartData = [
   {
@@ -33,41 +29,19 @@ const chartData = [
   },
 ];
 
-/* =====================================================
-   HOME SCREEN
-===================================================== */
-
 export default function HomeScreen() {
-  /* ============================
-     STATE SALDO
-  ============================ */
 
   const [showBalance, setShowBalance] = useState(true);
   const { colorScheme } = useAppTheme();
   const isDarkMode = colorScheme === 'dark';
 
-  /* =====================================================
-     TAMPILAN
-  ===================================================== */
-
   return (
     <SafeAreaView style={[styles.safeArea, isDarkMode && styles.darkBackground]} edges={['top']}>
       <StatusBar barStyle="light-content" backgroundColor={NAVY} />
 
-      {/* =================================================
-          HEADER + DRAWER REUSABLE
-      ================================================= */}
-
       <Header />
 
-      {/* =================================================
-          KONTEN DASHBOARD
-      ================================================= */}
-
       <ScrollView style={[styles.scroll, isDarkMode && styles.darkBackground]} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        {/* =========================
-            SAPAAN
-        ========================= */}
 
         <View style={styles.greeting}>
           <View style={styles.avatar}>
@@ -80,16 +54,10 @@ export default function HomeScreen() {
             <Text style={styles.role}>Administrator</Text>
           </View>
         </View>
-
-        {/* =========================
-            SALDO KAS
-        ========================= */}
-
+         
         <View style={styles.balanceCard}>
           <View style={styles.balanceHeader}>
             <Text style={styles.balanceLabel}>Saldo Kas</Text>
-
-            {/* BUTTON LIHAT / SEMBUNYIKAN SALDO */}
 
             <Pressable onPress={() => setShowBalance(!showBalance)} accessibilityRole="button" accessibilityLabel={showBalance ? 'Sembunyikan saldo' : 'Tampilkan saldo'} hitSlop={12}>
               <Ionicons name={showBalance ? 'eye-outline' : 'eye-off-outline'} size={24} color="#FFFFFF" />
@@ -100,10 +68,6 @@ export default function HomeScreen() {
 
           <Text style={styles.balanceCaption}>Saldo keseluruhan organisasi</Text>
         </View>
-
-        {/* =================================================
-            RINGKASAN PEMASUKAN & PENGELUARAN
-        ================================================= */}
 
         <View style={styles.summaryRow}>
           {/* PEMASUKAN */}
@@ -118,8 +82,6 @@ export default function HomeScreen() {
             <Text style={styles.incomeAmount}>Rp.200.000</Text>
           </View>
 
-          {/* PENGELUARAN */}
-
           <View style={[styles.summaryCard, styles.expenseCard, isDarkMode && styles.darkCard]}>
             <View style={styles.summaryTitleRow}>
               <Text style={[styles.expenseTitle, isDarkMode && styles.darkText]}>Pengeluaran</Text>
@@ -131,14 +93,8 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* =================================================
-            GRAFIK
-        ================================================= */}
-
         <View style={styles.chartSection}>
           <Text style={[styles.sectionTitle, isDarkMode && styles.darkText]}>Grafik Pemasukan & Pengeluaran</Text>
-
-          {/* LEGEND */}
 
           <View style={styles.legend}>
             <View style={styles.legendItem}>
@@ -168,13 +124,10 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          {/* BAR CHART */}
-
           <View style={styles.chart}>
             {chartData.map((item) => (
               <View key={item.month} style={styles.barGroup}>
                 <View style={styles.bars}>
-                  {/* BAR PEMASUKAN */}
 
                   <View
                     style={[
@@ -185,8 +138,6 @@ export default function HomeScreen() {
                       },
                     ]}
                   />
-
-                  {/* BAR PENGELUARAN */}
 
                   <View
                     style={[
@@ -205,10 +156,6 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* =================================================
-            CARD DETEKSI ANOMALI
-        ================================================= */}
-
         <Pressable
           style={({ pressed }) => [styles.anomalyCard, isDarkMode && styles.darkCard, pressed && styles.anomalyPressed]}
           onPress={() => router.push('/admin/deteksi-anomali')}
@@ -226,9 +173,6 @@ export default function HomeScreen() {
           <Ionicons name="chevron-forward" size={21} color={NAVY} />
         </Pressable>
 
-        {/* =========================
-            FOOTER
-        ========================= */}
 
         <Text style={styles.footer}>KASINO · Kas Informasi Organisasi</Text>
       </ScrollView>
@@ -236,14 +180,7 @@ export default function HomeScreen() {
   );
 }
 
-/* =====================================================
-   STYLE
-===================================================== */
-
 const styles = StyleSheet.create({
-  /* =================================================
-     SAFE AREA
-  ================================================= */
 
   safeArea: {
     flex: 1,
@@ -253,18 +190,11 @@ const styles = StyleSheet.create({
   darkCard: { backgroundColor: '#202b3e' },
   darkText: { color: '#f8fafc' },
 
-  /* =================================================
-     SCROLL
-  ================================================= */
-
+   
   scroll: {
     flex: 1,
 
-    /*
-      Memberikan ruang karena Header
-      menggunakan position absolute.
-    */
-
+  
     marginTop: 62,
   },
 
@@ -274,10 +204,7 @@ const styles = StyleSheet.create({
     paddingBottom: 35,
   },
 
-  /* =================================================
-     SAPAAN
-  ================================================= */
-
+ 
   greeting: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -317,9 +244,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 
-  /* =================================================
-     SALDO
-  ================================================= */
 
   balanceCard: {
     backgroundColor: NAVY,
@@ -365,10 +289,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 
-  /* =================================================
-     RINGKASAN
-  ================================================= */
-
+  
   summaryRow: {
     flexDirection: 'row',
 
@@ -445,9 +366,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 
-  /* =================================================
-     GRAFIK
-  ================================================= */
+ 
 
   chartSection: {
     marginBottom: 30,
@@ -541,10 +460,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
-  /* =================================================
-     ANOMALI
-  ================================================= */
-
+  
   anomalyCard: {
     minHeight: 76,
 
