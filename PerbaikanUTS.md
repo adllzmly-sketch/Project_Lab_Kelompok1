@@ -6,7 +6,7 @@ Perbaikan UTS Kelompok 1
 
 <img width="484" height="840" alt="Perbaika_UTS_Pemob_V1" src="https://github.com/user-attachments/assets/b178361b-4ae7-4089-b74a-0ff5047ed92e" />
 
-- pagination di halaman riwyat transaksi
+- pagination di halaman daftar transaksi
 
 <img width="510" height="838" alt="Pagination" src="https://github.com/user-attachments/assets/76590708-f6b8-4ae6-8713-c2351ce7b311" />
 
