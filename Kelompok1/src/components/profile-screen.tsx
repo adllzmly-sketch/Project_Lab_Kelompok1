@@ -6,6 +6,7 @@ import Constants from 'expo-constants';
 import * as ImagePicker from 'expo-image-picker';
 import { blue, FinancePage, navy } from './finance-ui';
 import { useAppTheme } from '../context/theme-context';
+import { useFinance } from '../context/finance-context';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 type Section = 'akun' | 'tentang';
@@ -20,21 +21,20 @@ export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
   const admin = role === 'admin';
 
  
-  const defaultNama = admin ? 'Rifa' : 'Pengguna Kasino';
-  const defaultUsername = admin ? 'rifa_admin' : 'user';
-  const email = admin ? 'rifa@kasino.id' : 'user@kasino.id';
+  const { getAccount, updateProfile, updateProfilePhoto, updateUsername } = useFinance();
+  const account = getAccount(role);
+  const nama = account.name;
+  const username = account.username;
+  const email = account.email;
+  const profileImage = account.photo || null;
   const roleName = admin ? 'Administrator' : 'User / Anggota';
 
   const [open, setOpen] = useState<Section | null>(null);
   const toggle = (section: Section) => setOpen((current) => (current === section ? null : section));
 
-  const [nama, setNama] = useState(defaultNama);
-  const [username, setUsername] = useState(defaultUsername);
-  const [profileImage, setProfileImage] = useState<string | null>(null);
-  
   const [isEditing, setIsEditing] = useState(false);
-  const [tempNama, setTempNama] = useState(defaultNama);
-  const [tempUsername, setTempUsername] = useState(defaultUsername);
+  const [tempNama, setTempNama] = useState(account.name);
+  const [tempUsername, setTempUsername] = useState(account.username);
 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -56,7 +56,7 @@ export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
       });
 
       if (!result.canceled && result.assets && result.assets.length > 0 && result.assets[0].uri) {
-        setProfileImage(result.assets[0].uri);
+        updateProfilePhoto(role, result.assets[0].uri);
       }
     } catch {
       Alert.alert('Error', 'Terjadi kesalahan saat memilih gambar.');
@@ -74,8 +74,11 @@ export function ProfileScreen({ role = 'admin' }: { role?: 'admin' | 'user' }) {
       Alert.alert('Peringatan', 'Nama dan Username tidak boleh kosong!');
       return;
     }
-    setNama(tempNama);
-    setUsername(tempUsername);
+    if (tempUsername.trim() !== username && !updateUsername(role, tempUsername)) {
+      Alert.alert('Username tidak tersedia', 'Masukkan username yang belum digunakan.');
+      return;
+    }
+    updateProfile(role, tempNama.trim(), email);
     setIsEditing(false);
     Alert.alert('Berhasil', 'Informasi profil berhasil disimpan!');
   };

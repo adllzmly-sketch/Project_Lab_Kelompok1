@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -12,13 +11,8 @@ import Svg, { Path, Circle } from 'react-native-svg';
 import { useRouter } from 'expo-router';
 
 import Header from '../../components/Header';
-import { useFinance } from '../../context/finance-context';
+import { AnomalyStatus, useFinance } from '../../context/finance-context';
 import { useAppTheme } from '../../context/theme-context';
-
-type AnomalyStatus =
-  | 'Perlu Ditinjau'
-  | 'Terkonfirmasi'
-  | 'Tidak terbukti anomali';
 
 type AnomalyTransaction = {
   id: string;
@@ -30,9 +24,6 @@ type AnomalyTransaction = {
   isExpanded: boolean;
 };
 
-type SavedStatuses = Record<string, AnomalyStatus>;
-
-const STATUS_KEY = '@kasino/anomaly-status';
 const AMOUNT_THRESHOLD = 1_000_000;
 
 const BackArrowIcon = ({ dark = false }: { dark?: boolean }) => (
@@ -93,60 +84,11 @@ const AnomalySearchIcon = () => (
 
 export default function DeteksiAnomaliScreen() {
   const router = useRouter();
-  const { transactions } = useFinance();
+  const { transactions, anomalyStatuses: statuses, setAnomalyStatus } = useFinance();
   const { colorScheme } = useAppTheme();
   const isDarkMode = colorScheme === 'dark';
 
   const [expandedIds, setExpandedIds] = useState<string[]>([]);
-  const [statuses, setStatuses] = useState<SavedStatuses>({});
-  const [statusLoaded, setStatusLoaded] = useState(false);
-
-  // Memuat status pemeriksaan yang tersimpan.
-  useEffect(() => {
-    let active = true;
-
-    const loadStatuses = async () => {
-      try {
-        const saved = await AsyncStorage.getItem(STATUS_KEY);
-
-        if (saved && active) {
-          const parsed: unknown = JSON.parse(saved);
-
-          if (
-            parsed !== null &&
-            typeof parsed === 'object' &&
-            !Array.isArray(parsed)
-          ) {
-            setStatuses(parsed as SavedStatuses);
-          }
-        }
-      } catch (error) {
-        console.error('Gagal memuat status anomali:', error);
-      } finally {
-        if (active) {
-          setStatusLoaded(true);
-        }
-      }
-    };
-
-    void loadStatuses();
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  // Menyimpan status setiap kali status pemeriksaan berubah.
-  useEffect(() => {
-    if (!statusLoaded) return;
-
-    AsyncStorage.setItem(STATUS_KEY, JSON.stringify(statuses)).catch(
-      (error) => {
-        console.error('Gagal menyimpan status anomali:', error);
-      },
-    );
-  }, [statuses, statusLoaded]);
-
   // Mendeteksi nominal besar dan transaksi yang berpotensi duplikat.
   const anomalyList = useMemo<AnomalyTransaction[]>(() => {
     const transactionKey = (
@@ -228,24 +170,19 @@ export default function DeteksiAnomaliScreen() {
   };
 
   const handleStatusChange = (id: string) => {
-    setStatuses((previous) => {
-      const current = previous[id] ?? 'Perlu Ditinjau';
+    const current = statuses[id] ?? 'Perlu Ditinjau';
 
-      let next: AnomalyStatus;
+    let next: AnomalyStatus;
 
-      if (current === 'Perlu Ditinjau') {
-        next = 'Terkonfirmasi';
-      } else if (current === 'Terkonfirmasi') {
-        next = 'Tidak terbukti anomali';
-      } else {
-        next = 'Perlu Ditinjau';
-      }
+    if (current === 'Perlu Ditinjau') {
+      next = 'Terkonfirmasi';
+    } else if (current === 'Terkonfirmasi') {
+      next = 'Tidak terbukti anomali';
+    } else {
+      next = 'Perlu Ditinjau';
+    }
 
-      return {
-        ...previous,
-        [id]: next,
-      };
-    });
+    setAnomalyStatus(id, next);
   };
 
   const renderAnomalyItem = ({

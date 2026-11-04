@@ -15,7 +15,7 @@ export function FinanceDashboard({ role }: { role: 'admin' | 'user' }) {
   const { colorScheme } = useAppTheme();
   const isDarkMode = colorScheme === 'dark';
 
-  const { transactions } = useFinance();
+  const { transactions, getAccount } = useFinance();
 
   const [showBalance, setShowBalance] = useState(true);
 
@@ -41,7 +41,7 @@ export function FinanceDashboard({ role }: { role: 'admin' | 'user' }) {
             </View>
 
             <View style={styles.greetingInfo}>
-              <Text style={[styles.hello, isDarkMode && styles.helloDark]}>Halo Pengguna</Text>
+              <Text style={[styles.hello, isDarkMode && styles.helloDark]}>Halo {getAccount('user').name}</Text>
 
               <Text style={[styles.role, isDarkMode && styles.roleDark]}>Pengguna</Text>
             </View>

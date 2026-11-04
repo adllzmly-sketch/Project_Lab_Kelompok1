@@ -13,17 +13,19 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { useFinance } from '@/context/finance-context';
 
 const NAVY = '#142F70';
 const BLUE = 'rgba(20, 47, 112, 0.7)';
 const RED = '#F70005';
 
-const accounts = {
-  '24880100A': { password: 'admin', route: '/admin' },
-  '24880100U': { password: 'user', route: '/user/dashboard' },
+const roleRoutes = {
+  admin: '/admin',
+  user: '/user/dashboard',
 } as const;
 
 export default function LoginScreen() {
+  const { authenticate } = useFinance();
   const [nim, setNim] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -32,16 +34,13 @@ export default function LoginScreen() {
   const [passwordError, setPasswordError] = useState('');
 
   const handleLogin = () => {
-    const normalizedNim = nim.trim().toUpperCase();
+    const normalizedNim = nim.trim();
     setNimError('');
     setPasswordError('');
 
     let isValid = true;
     if (!normalizedNim) {
       setNimError('NIM wajib diisi.');
-      isValid = false;
-    } else if (!/^\d{8}[AU]$/.test(normalizedNim)) {
-      setNimError('Format NIM tidak valid.');
       isValid = false;
     }
 
@@ -52,18 +51,13 @@ export default function LoginScreen() {
 
     if (!isValid) return;
 
-    const account = accounts[normalizedNim as keyof typeof accounts];
-    if (!account) {
-      setNimError('NIM atau kata sandi tidak sesuai.');
-      return;
-    }
-
-    if (password !== account.password) {
+    const role = authenticate(normalizedNim, password);
+    if (!role) {
       setPasswordError('NIM atau kata sandi tidak sesuai.');
       return;
     }
 
-    router.replace(account.route as any);
+    router.replace(roleRoutes[role]);
   };
 
   return (

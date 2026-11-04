@@ -5,7 +5,9 @@ import { useAppTheme, ThemePreferenceProvider } from '@/context/theme-context';
 
 import { ThemeProvider } from 'expo-router';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
+import { SQLiteProvider } from 'expo-sqlite';
 import { FinanceProvider } from '@/context/finance-context';
+import { DATABASE_NAME, initializeFinanceDatabase } from '@/context/finance-database';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -14,7 +16,11 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
-  return <ThemePreferenceProvider><ThemedRootLayout /></ThemePreferenceProvider>;
+  return (
+    <SQLiteProvider databaseName={DATABASE_NAME} onInit={initializeFinanceDatabase}>
+      <ThemePreferenceProvider><ThemedRootLayout /></ThemePreferenceProvider>
+    </SQLiteProvider>
+  );
 }
 
 function ThemedRootLayout() {

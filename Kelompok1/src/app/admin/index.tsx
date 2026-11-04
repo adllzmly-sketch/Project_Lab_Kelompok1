@@ -1,11 +1,13 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, Pressable, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 import Header from '@/components/Header';
 import { useAppTheme } from '@/context/theme-context';
+import { useFinance } from '@/context/finance-context';
+import { money } from '@/components/finance-ui';
 
 // WARNA 
 
@@ -16,23 +18,44 @@ const RED = '#F70005';
 
 // Grafik
 
-const chartData = [
-  {
-    month: 'Okt',
-    income: 65,
-    expense: 45,
-  },
-  {
-    month: 'Nov',
-    income: 80,
-    expense: 65,
-  },
-];
+const MONTHS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+const CHART_MAX_HEIGHT = 100;
+
+function monthOf(date: string) {
+  const index = MONTHS.findIndex((month) => date.toLowerCase().includes(month.toLowerCase()));
+  const year = Number(date.match(/\d{4}/)?.[0] ?? 0);
+  return index < 0 ? null : { key: year * 12 + index, label: MONTHS[index].slice(0, 3) };
+}
 
 export default function HomeScreen() {
 
   const [showBalance, setShowBalance] = useState(true);
   const { colorScheme } = useAppTheme();
+  const { transactions, getAccount } = useFinance();
+  const account = getAccount('admin');
+
+  const income = transactions.filter((item) => item.type === 'Pemasukan').reduce((sum, item) => sum + item.amount, 0);
+  const expense = transactions.filter((item) => item.type === 'Pengeluaran').reduce((sum, item) => sum + item.amount, 0);
+
+  // Dua bulan terakhir yang memiliki transaksi, dihitung dari data SQLite.
+  const chartData = useMemo(() => {
+    const totals = new Map<number, { month: string; income: number; expense: number }>();
+    for (const item of transactions) {
+      const month = monthOf(item.date);
+      if (!month) continue;
+      const entry = totals.get(month.key) ?? { month: month.label, income: 0, expense: 0 };
+      if (item.type === 'Pemasukan') entry.income += item.amount;
+      else entry.expense += item.amount;
+      totals.set(month.key, entry);
+    }
+    const recent = [...totals.entries()].sort((a, b) => a[0] - b[0]).slice(-2).map(([, value]) => value);
+    const max = Math.max(1, ...recent.flatMap((item) => [item.income, item.expense]));
+    return recent.map((item) => ({
+      month: item.month,
+      income: Math.max(2, Math.round((item.income / max) * CHART_MAX_HEIGHT)),
+      expense: Math.max(2, Math.round((item.expense / max) * CHART_MAX_HEIGHT)),
+    }));
+  }, [transactions]);
   const isDarkMode = colorScheme === 'dark';
 
   return (
@@ -49,7 +72,7 @@ export default function HomeScreen() {
           </View>
 
           <View style={styles.greetingInfo}>
-            <Text style={[styles.hello, isDarkMode && styles.darkText]}>Halo Rifa</Text>
+            <Text style={[styles.hello, isDarkMode && styles.darkText]}>Halo {account.name}</Text>
 
             <Text style={styles.role}>Administrator</Text>
           </View>
@@ -64,7 +87,7 @@ export default function HomeScreen() {
             </Pressable>
           </View>
 
-          <Text style={styles.balanceAmount}>{showBalance ? 'Rp. 10.000.000' : 'Rp. •••••••••'}</Text>
+          <Text style={styles.balanceAmount}>{showBalance ? money(income - expense) : 'Rp. •••••••••'}</Text>
 
           <Text style={styles.balanceCaption}>Saldo keseluruhan organisasi</Text>
         </View>
@@ -79,7 +102,7 @@ export default function HomeScreen() {
               <Ionicons name="trending-up-outline" size={22} color={GREEN} />
             </View>
 
-            <Text style={styles.incomeAmount}>Rp.200.000</Text>
+            <Text style={styles.incomeAmount}>{money(income)}</Text>
           </View>
 
           <View style={[styles.summaryCard, styles.expenseCard, isDarkMode && styles.darkCard]}>
@@ -89,7 +112,7 @@ export default function HomeScreen() {
               <Ionicons name="trending-down-outline" size={22} color={RED} />
             </View>
 
-            <Text style={[styles.expenseAmount, isDarkMode && styles.darkText]}>Rp.200.000</Text>
+            <Text style={[styles.expenseAmount, isDarkMode && styles.darkText]}>{money(expense)}</Text>
           </View>
         </View>
 
