@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Alert, Modal, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import * as Print from 'expo-print';
 import { FinancePage, money } from './finance-ui';
 import { Transaction, useFinance } from '../context/finance-context';
@@ -13,7 +14,7 @@ export function FinanceReport({ role }: { role: 'admin' | 'user' }) {
   const [printing, setPrinting] = useState(false);
   const [month, setMonth] = useState(() => new Date().getMonth());
   const [year, setYear] = useState(() => new Date().getFullYear());
-  const [yearDraft, setYearDraft] = useState(() => String(new Date().getFullYear()));
+  const [pickerYear, setPickerYear] = useState(() => new Date().getFullYear());
   const [monthPickerOpen, setMonthPickerOpen] = useState(false);
   const period = useMemo(() => new Date(year, month, 1), [year, month]);
   const periodLabel = formatPeriod(period);
@@ -48,30 +49,24 @@ export function FinanceReport({ role }: { role: 'admin' | 'user' }) {
   </Pressable>;
 
   return <FinancePage title="Laporan Keuangan" role={role} headerAction={downloadButton}>
-    <View style={s.reportFilters}>
-      <View style={s.reportFilterField}>
-        <Text style={s.reportPeriodLabel}>Bulan</Text>
-        <Pressable accessibilityRole="button" accessibilityLabel="Pilih bulan laporan" onPress={() => setMonthPickerOpen(true)} style={s.reportPeriodButton}>
-          <Text style={s.reportPeriodValue}>{monthNames[month].replace(/^./, letter => letter.toLocaleUpperCase('id-ID'))}</Text>
-        </Pressable>
-      </View>
-      <View style={s.reportFilterField}>
-        <Text style={s.reportPeriodLabel}>Tahun</Text>
-        <TextInput accessibilityLabel="Tahun laporan" value={yearDraft} onChangeText={value => {
-          const digits = value.replace(/\D/g, '').slice(0, 4);
-          setYearDraft(digits);
-          if (digits.length === 4 && Number(digits) >= 1900 && Number(digits) <= 2100) setYear(Number(digits));
-        }} onBlur={() => {
-          if (yearDraft.length !== 4 || Number(yearDraft) < 1900 || Number(yearDraft) > 2100) setYearDraft(String(year));
-        }} keyboardType="number-pad" maxLength={4} style={s.reportYearInput} />
-      </View>
-    </View>
+    <Text style={s.reportPeriodLabel}>Periode</Text>
+    <Pressable accessibilityRole="button" accessibilityLabel="Pilih periode laporan dari kalender" onPress={() => { setPickerYear(year); setMonthPickerOpen(true); }} style={[s.reportPeriodButton, styles.periodButton]}>
+      <Text style={s.reportPeriodValue}>{monthNames[month].replace(/^./, letter => letter.toLocaleUpperCase('id-ID'))} {year}</Text>
+      <Ionicons name="calendar-outline" size={18} color="#fff" />
+    </Pressable>
     <Modal visible={monthPickerOpen} transparent animationType="fade" onRequestClose={() => setMonthPickerOpen(false)}>
       <View style={s.monthModalOverlay}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Tutup pilihan bulan" style={StyleSheet.absoluteFill} onPress={() => setMonthPickerOpen(false)} />
+        <Pressable accessibilityRole="button" accessibilityLabel="Tutup kalender" style={StyleSheet.absoluteFill} onPress={() => setMonthPickerOpen(false)} />
         <View style={s.monthModal}>
-          <Text style={s.monthModalTitle}>Pilih Bulan</Text>
-          <View style={s.monthGrid}>{monthNames.map((name, index) => <Pressable key={name} onPress={() => { setMonth(index); setMonthPickerOpen(false); }} style={[s.monthOption, month === index && s.monthOptionSelected]}><Text style={[s.monthOptionText, month === index && s.monthOptionTextSelected]}>{name.replace(/^./, letter => letter.toLocaleUpperCase('id-ID'))}</Text></Pressable>)}</View>
+          <View style={styles.yearRow}>
+            <Pressable accessibilityRole="button" accessibilityLabel="Tahun sebelumnya" disabled={pickerYear <= 1900} onPress={() => setPickerYear(value => value - 1)} hitSlop={10}><Ionicons name="chevron-back" size={22} color="#142F70" /></Pressable>
+            <Text style={[s.monthModalTitle, { marginBottom: 0 }]}>{pickerYear}</Text>
+            <Pressable accessibilityRole="button" accessibilityLabel="Tahun berikutnya" disabled={pickerYear >= 2100} onPress={() => setPickerYear(value => value + 1)} hitSlop={10}><Ionicons name="chevron-forward" size={22} color="#142F70" /></Pressable>
+          </View>
+          <View style={s.monthGrid}>{monthNames.map((name, index) => {
+            const selected = month === index && year === pickerYear;
+            return <Pressable key={name} onPress={() => { setMonth(index); setYear(pickerYear); setMonthPickerOpen(false); }} style={[s.monthOption, selected && s.monthOptionSelected]}><Text style={[s.monthOptionText, selected && s.monthOptionTextSelected]}>{name.replace(/^./, letter => letter.toLocaleUpperCase('id-ID'))}</Text></Pressable>;
+          })}</View>
         </View>
       </View>
     </Modal>
@@ -86,6 +81,11 @@ export function FinanceReport({ role }: { role: 'admin' | 'user' }) {
     </View>)}
   </FinancePage>;
 }
+
+const styles = StyleSheet.create({
+  periodButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  yearRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
+});
 
 function escapeHtml(value: string) {
   return value.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character] ?? character);

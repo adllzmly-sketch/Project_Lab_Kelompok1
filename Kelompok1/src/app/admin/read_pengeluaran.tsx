@@ -23,6 +23,15 @@ export default function CatatPengeluaran() {
 
   const nominalError = isZeroNominal ? 'jumllah nominal harus valid jangan korup min' : '';
 
+  const isFormComplete =
+    source.trim() !== '' &&
+    category.trim() !== '' &&
+    amount.trim() !== '' &&
+    numericValue > 0 &&
+    date !== null &&
+    note.trim() !== '' &&
+    proof.trim() !== '';
+
   const resetForm = () => {
     setSource('');
     setCategory('');
@@ -63,6 +72,7 @@ export default function CatatPengeluaran() {
 
         <Action
           label="Simpan"
+          disabled={!isFormComplete}
           onPress={() => {
             const value = Number(amount.replace(/\D/g, ''));
 

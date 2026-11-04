@@ -26,6 +26,15 @@ export default function TambahPemasukan() {
 
   const nominalError = isZeroNominal ? 'jumllah nominal harus valid jangan korup min' : isOverLimit ? 'darimana duitnya? siapakah icik bos kita itu' : '';
 
+  const isFormComplete =
+    source.trim() !== '' &&
+    amount.trim() !== '' &&
+    numericValue > 0 &&
+    !isOverLimit &&
+    date !== null &&
+    note.trim() !== '' &&
+    proof.trim() !== '';
+
   const resetForm = () => {
     setSource('');
     setAmount('');
@@ -63,6 +72,7 @@ export default function TambahPemasukan() {
 
         <Action
           label="Simpan"
+          disabled={!isFormComplete}
           onPress={() => {
             const value = Number(amount.replace(/\D/g, ''));
 
